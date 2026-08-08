@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Know What's Really In Your Trolley — GoodFor</title>
-<meta name="description" content="Scan any barcode at Coles or Woolies and instantly see every ingredient, allergen, and additive inside.">
+<title>See What's Really In Your Trolley — GoodFor</title>
+<meta name="description" content="Scan any barcode at Coles or Woolies and instantly understand every ingredient, allergen, and additive inside.">
 <meta name="theme-color" content="#f0ede6">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,8 +12,8 @@
 <link rel="preload" as="image" href="https://images.pexels.com/videos/4121754/barcode-buying-cashier-consumerism-4121754.jpeg?auto=compress&amp;cs=tinysrgb&amp;fit=crop&amp;h=630&amp;w=1200" fetchpriority="high">
 
 <style>:root{
-  --bg:#f0ede6; --ink:#1a3a0a; --dim:#748566; --line:#00000014;
-  --at:#2d5a1b; --on-at:#ffffff;
+  --bg:#f0ede6; --ink:#1a2e0a; --dim:#747e66; --line:#00000014;
+  --at:#2d5016; --on-at:#ffffff;
   --fd:'Archivo',Georgia,serif; --fb:'Inter',system-ui,-apple-system,sans-serif;
   --pad:clamp(20px,4.5vw,72px);
   --h1:clamp(3rem,9vw,8.6rem);
@@ -140,15 +140,24 @@ p{margin:0;text-wrap:pretty}
   .btn{transition:none}
 }
 @media print{ .bed,.pausebtn{display:none} [data-mf-in],[data-mf-reveal]{opacity:1;transform:none;filter:none} }
-.mf-nav{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;
-  justify-content:space-between;gap:24px;padding-block:clamp(14px,2vh,26px)}
+.mf-nav{position:fixed;top:0;left:0;right:0;z-index:120;display:flex;align-items:center;
+  justify-content:space-between;gap:24px;padding-block:clamp(14px,2vh,26px);
+  transition:background .35s var(--ease),padding .35s var(--ease),box-shadow .35s var(--ease)}
+/* Past the hero the fixed nav must read as a BAR, not loose text drifting over sections:
+   frosted background + hairline, slightly compressed. Toggled by the runtime at 24px scroll. */
+.mf-nav.is-scrolled{background:color-mix(in srgb,var(--bg) 80%,transparent);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  padding-block:clamp(10px,1.2vh,16px);
+  box-shadow:0 1px 0 var(--line),0 12px 30px -22px rgba(0,0,0,.4)}
 .mf-logo{font-family:var(--fd);font-size:1.35rem;letter-spacing:-.02em;text-decoration:none}
 .mf-links{display:none;gap:4px;border-radius:999px;padding:5px}
 .mf-links a{padding:.5em 1em;border-radius:999px;font-size:.86rem;text-decoration:none;color:var(--dim);
   transition:color .3s var(--ease),background .3s var(--ease)}
 .mf-links a:hover{color:var(--ink);background:rgba(255,255,255,.08)}
 @media(min-width:900px){.mf-links{display:flex}}
-.hero-in{margin-top:auto;padding-bottom:clamp(40px,7vh,96px);max-width:min(100%,1180px)}
+/* the nav is FIXED (out of flow), so every hero must clear it itself — without the top padding
+   a bed-less hero's headline renders at the very top, colliding with the nav row */
+.hero-in{margin-top:auto;padding-top:clamp(84px,11vh,130px);padding-bottom:clamp(40px,7vh,96px);max-width:min(100%,1180px)}
 .hero-in.is-sticky{position:sticky;top:0;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end}
 .hero-sub{margin-top:clamp(18px,2.4vh,30px);max-width:46ch;color:var(--dim);font-size:1.06rem}
 .hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:clamp(24px,3.4vh,40px)}
@@ -259,28 +268,28 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
   <a class="btn" href="#lead-form" data-mf-in="chrome" data-mf-magnet="90">Download the free app</a>
 </header>
   <div class="hero-in wrap gh-center"><p class="micro" data-mf-in="eyebrow">Food Scanner Australia</p>
-    <h1 data-mf-in="headline" data-mf-split="words">Know What's Really In Your Trolley</h1>
-    <p class="hero-sub" data-mf-in="sub">Scan any barcode at Coles or Woolies and instantly see every ingredient, allergen, and additive inside.</p>
+    <h1 data-mf-in="headline" data-mf-split="words">See What's Really In Your Trolley</h1>
+    <p class="hero-sub" data-mf-in="sub">Scan any barcode at Coles or Woolies and instantly understand every ingredient, allergen, and additive inside.</p>
     <div class="hero-cta" data-mf-in="cta"><a class="btn" href="#lead-form" data-mf-magnet="110">Download the free app</a></div></div>
 </section>
-<section class="sheet mq-band"><div class="wrap mq-in"><div data-mf-marquee="55"><span>Read Food Labels</span><span>Healthy Groceries App</span><span>Allergen Alerts</span><span>Cleaner Choices</span><span>Skincare Too</span></div><button type="button" class="btn btn--ghost mq-pause" data-mf-pause aria-pressed="false" aria-label="Pause the scrolling strip">Pause</button></div></section>
+<section class="sheet mq-band"><div class="wrap mq-in"><div data-mf-marquee="55"><span>Read Food Labels</span><span>Allergen Alerts</span><span>Healthier Swaps</span><span>Skincare Scan</span><span>Healthy Groceries App</span></div><button type="button" class="btn btn--ghost mq-pause" data-mf-pause aria-pressed="false" aria-label="Pause the scrolling strip">Pause</button></div></section>
 <section class="frows wrap" id="work"><h2 data-mf-reveal data-mf-split="words">What GoodFor Does</h2>
   
   <div class="frow" data-mf-reveal>
     <figure class="frow-media"><img src="media/au-site-1.png" alt="Scan Any Barcode Instantly" width="1536" height="1024" loading="lazy" decoding="async"></figure>
-    <div class="frow-copy"><span class="micro">01</span><h3>Scan Any Barcode Instantly</h3><p>Point your phone at any product in the supermarket and get a plain-English breakdown of every ingredient inside.</p><a class="link-cta" href="#lead-form">Download the free app <span aria-hidden="true">&rarr;</span></a></div>
+    <div class="frow-copy"><span class="micro">01</span><h3>Scan Any Barcode Instantly</h3><p>Point your phone at any product in the supermarket aisle and get a clear breakdown of what's actually inside it.</p><a class="link-cta" href="#lead-form">Download the free app <span aria-hidden="true">&rarr;</span></a></div>
   </div>
   <div class="frow frow--rev" data-mf-reveal>
-    <figure class="frow-media"><img src="media/au-site-2.png" alt="Your Personalised Safety Score" width="1254" height="1254" loading="lazy" decoding="async"></figure>
-    <div class="frow-copy"><span class="micro">02</span><h3>Your Personalised Safety Score</h3><p>GoodFor tailors safety ratings to your own health profile, allergies, and dietary sensitivities so results are relevant to you.</p><a class="link-cta" href="#lead-form">Download the free app <span aria-hidden="true">&rarr;</span></a></div>
+    <figure class="frow-media"><img src="media/au-site-2.png" alt="Personalised Safety Scores" width="1254" height="1254" loading="lazy" decoding="async"></figure>
+    <div class="frow-copy"><span class="micro">02</span><h3>Personalised Safety Scores</h3><p>Your health profile, allergies, and sensitivities shape every score so results are relevant to you, not a generic average.</p><a class="link-cta" href="#lead-form">Download the free app <span aria-hidden="true">&rarr;</span></a></div>
   </div>
   <div class="frow" data-mf-reveal>
     <figure class="frow-media"><img src="media/au-site-3.png" alt="Flag Allergens Automatically" width="1254" height="1254" loading="lazy" decoding="async"></figure>
-    <div class="frow-copy"><span class="micro">03</span><h3>Flag Allergens Automatically</h3><p>Potential allergens and irritants are highlighted the moment you scan, so nothing slips past you at the shelf.</p><a class="link-cta" href="#lead-form">Download the free app <span aria-hidden="true">&rarr;</span></a></div>
+    <div class="frow-copy"><span class="micro">03</span><h3>Flag Allergens Automatically</h3><p>GoodFor reads the ingredient list so you don't have to, highlighting anything that could be a problem for your body.</p><a class="link-cta" href="#lead-form">Download the free app <span aria-hidden="true">&rarr;</span></a></div>
   </div>
   <div class="frow frow--rev" data-mf-reveal>
-    <figure class="frow-media"><img src="media/au-site-4.webp" alt="Find a Better Alternative" width="683" height="1024" loading="lazy" decoding="async"></figure>
-    <div class="frow-copy"><span class="micro">04</span><h3>Find a Better Alternative</h3><p>When a product isn't a great choice, GoodFor suggests cleaner, healthier alternatives you can swap in right away.</p><a class="link-cta" href="#lead-form">Download the free app <span aria-hidden="true">&rarr;</span></a></div>
+    <figure class="frow-media"><img src="media/au-site-4.webp" alt="Find Cleaner Alternatives" width="683" height="1024" loading="lazy" decoding="async"></figure>
+    <div class="frow-copy"><span class="micro">04</span><h3>Find Cleaner Alternatives</h3><p>When a product doesn't stack up, GoodFor suggests a better option already available in the same store.</p><a class="link-cta" href="#lead-form">Download the free app <span aria-hidden="true">&rarr;</span></a></div>
   </div>
 </section>
 
@@ -289,10 +298,10 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
   </div></section>
 <section class="faq wrap" id="faq"><h2 data-mf-reveal data-mf-split="words">Questions, answered</h2>
   <div class="faq-in">
-  <details class="faq-item" data-mf-reveal><summary>Does GoodFor work with Australian supermarket products like Coles and Woolworths?<span class="faq-x" aria-hidden="true">+</span></summary><p>Yes — GoodFor is built to work with products sold in the UK and Australia, including everyday items found at Coles and Woolworths. Simply scan the barcode on the pack and the app pulls up the ingredient and allergen information for that product.</p></details><details class="faq-item" data-mf-reveal><summary>Is the app actually free or does it have a catch?<span class="faq-x" aria-hidden="true">+</span></summary><p>You can download GoodFor and start scanning for free. The core scanning and ingredient features are available without paying anything, so you can try it on your next grocery run before deciding if you want more.</p></details><details class="faq-item" data-mf-reveal><summary>How does GoodFor know what is safe for me specifically?<span class="faq-x" aria-hidden="true">+</span></summary><p>When you set up your profile you tell GoodFor about your allergies, intolerances, and health goals. Every scan is then assessed against your personal profile, so the safety score you see is tailored to you rather than a generic rating.</p></details><details class="faq-item" data-mf-reveal><summary>Can I trust the ingredient and allergen information GoodFor shows me?<span class="faq-x" aria-hidden="true">+</span></summary><p>GoodFor draws on trusted health and science sources to power its analysis and flags ingredients based on established allergen and safety guidance. As with any tool, it is designed to help you make more informed decisions — always check with a healthcare professional for medical dietary needs.</p></details>
+  <details class="faq-item" data-mf-reveal><summary>Does GoodFor work with Australian supermarket products like Coles and Woolworths?<span class="faq-x" aria-hidden="true">+</span></summary><p>Yes — GoodFor is built with Australian shoppers in mind and covers products commonly found in major supermarkets. Simply scan the barcode on the shelf and the app gets to work immediately.</p></details><details class="faq-item" data-mf-reveal><summary>Is the app actually free to download and use?<span class="faq-x" aria-hidden="true">+</span></summary><p>You can download GoodFor and start scanning products at no cost. The core features that help you read food labels and check ingredients are available from the moment you install it.</p></details><details class="faq-item" data-mf-reveal><summary>How does GoodFor know which ingredients are a problem for me specifically?<span class="faq-x" aria-hidden="true">+</span></summary><p>When you set up your profile you tell GoodFor about your allergies, intolerances, and health goals. Every scan is then filtered through your personal profile so the results reflect your situation, not someone else's.</p></details><details class="faq-item" data-mf-reveal><summary>Can I use it for more than just food — what about skincare or toiletries?<span class="faq-x" aria-hidden="true">+</span></summary><p>Absolutely. GoodFor lets you scan skincare, cosmetics, and personal care products as well as food and drink. The same ingredient analysis and allergen flagging applies so you get a consistent picture across everything you buy.</p></details>
   </div>
 </section>
-<section class="cta wrap" id="cta"><h2 data-mf-reveal data-mf-split="words">Start Scanning for Free</h2><p data-mf-reveal>Download the GoodFor app and take the guesswork out of every grocery run at Coles, Woolies, or wherever you shop.</p><a class="btn" href="#lead-form" data-mf-reveal data-mf-magnet="120">Download the free app</a></section><footer class="wrap"><p class="micro">GoodFor &copy; 2026</p></footer>
+<section class="cta wrap" id="cta"><h2 data-mf-reveal data-mf-split="words">Know Before You Buy</h2><p data-mf-reveal>Download GoodFor free and start scanning your groceries at Coles or Woolies today.</p><a class="btn" href="#lead-form" data-mf-reveal data-mf-magnet="120">Download the free app</a></section><footer class="wrap"><p class="micro">GoodFor &copy; 2026</p></footer>
 <script>
 (function(){
 'use strict';
@@ -753,8 +762,22 @@ function parallax(){
   })();
 }
 
+/* fixed nav gains its frosted-bar state once the page scrolls — works under reduced motion too
+ * (it is a legibility affordance, not an animation) */
+function navBar(){
+  var nav = d.querySelector('.mf-nav');
+  if (!nav) return;
+  var on = false;
+  function check(){
+    var s = (w.scrollY || d.documentElement.scrollTop) > 24;
+    if (s !== on){ on = s; nav.classList.toggle('is-scrolled', on); }
+  }
+  w.addEventListener('scroll', check, { passive:true });
+  check();
+}
+
 ready(function(){
-  split(); ladder(); reveals(); counters();
+  split(); ladder(); reveals(); counters(); navBar();
   if (STATIC) return;
   initVideos(); spotlight(); marquees(); magnets(); scrollText(); hscroll(); parallax();
   RM.addEventListener && RM.addEventListener('change', function(){ ladder(); });
@@ -776,13 +799,13 @@ ready(function(){
       <div class="lf-err" role="alert" style="display:none;margin-top:12px;color:#b3261e;font-weight:600;text-align:center"></div>
     </form></div><style>
 html{scroll-behavior:smooth}
-/* mobile safety net — guarantees no horizontal overflow or clipped media on phones, whatever
+/* mobile safety net â€” guarantees no horizontal overflow or clipped media on phones, whatever
    the layout does. Element-level specificity, so real .class rules (object-fit boxes) still win. */
 html,body{overflow-x:hidden;max-width:100%}
 img,svg,video,iframe{max-width:100%;height:auto}
 *{min-width:0}
 @media(max-width:600px){
-  /* cap inline pixel-width elements so they never overflow — but leave horizontal scroll
+  /* cap inline pixel-width elements so they never overflow â€” but leave horizontal scroll
      containers (swipe rows) alone so their snap-scrolling still works */
   [style*="width:"][style*="px"]:not([style*="overflow-x"]):not([style*="scroll-snap"]){max-width:100%}
 }
@@ -806,7 +829,7 @@ img,svg,video,iframe{max-width:100%;height:auto}
   function ready(fn){if(d.readyState!=='loading')fn();else d.addEventListener('DOMContentLoaded',fn)}
   function num(el,name,fb){var v=el.getAttribute('data-'+name);var n=v===null?NaN:parseFloat(v);return isNaN(n)?fb:n}
   /* Swiper is a COMPONENT, not decoration: it must work with reduced motion, with no GSAP, and in
-     the print/static paths. It also needs a real stop control (WCAG 2.2.2) — pauseOnMouseEnter is
+     the print/static paths. It also needs a real stop control (WCAG 2.2.2) â€” pauseOnMouseEnter is
      pointer-only and autoplay previously resumed after interaction. */
   function initSwiper(reduced){
     if(!window.Swiper)return;
@@ -837,7 +860,7 @@ img,svg,video,iframe{max-width:100%;height:auto}
   ready(function(){
     // ?static kills all motion (screenshots, PDF export, previews); inside the Elementor editor
     // the engine must stay off entirely or it fights the editor's own DOM manipulation. These two
-    // guards predate the Swiper/marquee rework and were lost in it — restored deliberately.
+    // guards predate the Swiper/marquee rework and were lost in it â€” restored deliberately.
     if(/[?&]static\b/.test(location.search))return;
     if(d.body.classList.contains('elementor-editor-active'))return;
     if(!window.gsap){console.warn('[motion] GSAP not loaded');return}
@@ -915,13 +938,13 @@ img,svg,video,iframe{max-width:100%;height:auto}
       // measure after webfonts swap, otherwise the width (and therefore the speed) is wrong
       if(d.fonts&&d.fonts.ready)d.fonts.ready.then(function(){w=(track.scrollWidth||1)+gap;run()});else run();
     });
-    // Swiper coverflow galleries — the immersive 3D image carousel (Bihar-tourism-style feel).
+    // Swiper coverflow galleries â€” the immersive 3D image carousel (Bihar-tourism-style feel).
     // Real brand photos fan out in 3D and swipe/autoplay; touch-native so it stays smooth on mobile.
     window.addEventListener('load',function(){if(hasST)ScrollTrigger.refresh()})
   })
 })();
 </script>
-<script>(function(){var EP="https://wp-connect-goodfor-a7f4720c.koyeb.app/api/landing/lead",JOB="lf_mskc4omc_b4c6e28f";
+<script>(function(){var EP="https://wp-connect-goodfor-a7f4720c.koyeb.app/api/landing/lead",JOB="lf_mskehoku_913f7853";
 function wire(f){
   if(!f||f.__lfWired)return;f.__lfWired=1;
   f.addEventListener('submit',function(e){
@@ -932,7 +955,7 @@ function wire(f){
     var btn=f.querySelector('button[type=submit],[type=submit]');var lbl=btn?btn.textContent:'';
     var ok=f.querySelector('.lf-ok'),err=f.querySelector('.lf-err');
     if(err){err.style.display='none';err.textContent=''}
-    if(btn){btn.disabled=true;btn.textContent='Sending…'}
+    if(btn){btn.disabled=true;btn.textContent='Sendingâ€¦'}
     var done=function(good,msg){
       if(btn){btn.disabled=!good;btn.textContent=good?'Sent \u2713':lbl}
       if(good){

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Finally, a mind that lets you rest — Calm</title>
-<meta name="description" content="Guided meditations and sleep stories designed to quiet a busy brain so you fall asleep faster, tonight.">
+<title>Finally, a Mind That Lets You Rest — Calm</title>
+<meta name="description" content="Guided meditations and sleep stories designed to quiet a busy mind and help you fall asleep faster.">
 <meta name="theme-color" content="#1a3e6f">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -140,15 +140,24 @@ p{margin:0;text-wrap:pretty}
   .btn{transition:none}
 }
 @media print{ .bed,.pausebtn{display:none} [data-mf-in],[data-mf-reveal]{opacity:1;transform:none;filter:none} }
-.mf-nav{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;
-  justify-content:space-between;gap:24px;padding-block:clamp(14px,2vh,26px)}
+.mf-nav{position:fixed;top:0;left:0;right:0;z-index:120;display:flex;align-items:center;
+  justify-content:space-between;gap:24px;padding-block:clamp(14px,2vh,26px);
+  transition:background .35s var(--ease),padding .35s var(--ease),box-shadow .35s var(--ease)}
+/* Past the hero the fixed nav must read as a BAR, not loose text drifting over sections:
+   frosted background + hairline, slightly compressed. Toggled by the runtime at 24px scroll. */
+.mf-nav.is-scrolled{background:color-mix(in srgb,var(--bg) 80%,transparent);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  padding-block:clamp(10px,1.2vh,16px);
+  box-shadow:0 1px 0 var(--line),0 12px 30px -22px rgba(0,0,0,.4)}
 .mf-logo{font-family:var(--fd);font-size:1.35rem;letter-spacing:-.02em;text-decoration:none}
 .mf-links{display:none;gap:4px;border-radius:999px;padding:5px}
 .mf-links a{padding:.5em 1em;border-radius:999px;font-size:.86rem;text-decoration:none;color:var(--dim);
   transition:color .3s var(--ease),background .3s var(--ease)}
 .mf-links a:hover{color:var(--ink);background:rgba(255,255,255,.08)}
 @media(min-width:900px){.mf-links{display:flex}}
-.hero-in{margin-top:auto;padding-bottom:clamp(40px,7vh,96px);max-width:min(100%,1180px)}
+/* the nav is FIXED (out of flow), so every hero must clear it itself — without the top padding
+   a bed-less hero's headline renders at the very top, colliding with the nav row */
+.hero-in{margin-top:auto;padding-top:clamp(84px,11vh,130px);padding-bottom:clamp(40px,7vh,96px);max-width:min(100%,1180px)}
 .hero-in.is-sticky{position:sticky;top:0;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end}
 .hero-sub{margin-top:clamp(18px,2.4vh,30px);max-width:46ch;color:var(--dim);font-size:1.06rem}
 .hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:clamp(24px,3.4vh,40px)}
@@ -262,56 +271,56 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
 </header>
   <div class="hero-in wrap">
     <p class="micro" data-mf-in="eyebrow">Your sleep app</p>
-    <h1 data-mf-in="headline" data-mf-split="words">Finally, a mind that lets you rest</h1>
-    <p class="hero-sub" data-mf-in="sub">Guided meditations and sleep stories designed to quiet a busy brain so you fall asleep faster, tonight.</p>
+    <h1 data-mf-in="headline" data-mf-split="words">Finally, a Mind That Lets You Rest</h1>
+    <p class="hero-sub" data-mf-in="sub">Guided meditations and sleep stories designed to quiet a busy mind and help you fall asleep faster.</p>
     <div class="hero-cta" data-mf-in="cta"><a class="btn" href="#lead-form" data-mf-magnet="110">Try it free</a></div>
   </div>
 </section>
-<section class="mq-band"><div class="wrap mq-in"><div data-mf-marquee="55"><span>Sleep Stories</span><span>Guided Meditation</span><span>Stress Relief</span><span>Daily Practice</span><span>Deep Rest</span></div><button type="button" class="btn btn--ghost mq-pause" data-mf-pause aria-pressed="false" aria-label="Pause the scrolling strip">Pause</button></div></section>
-<section class="manifesto wrap"><p class="lede" data-mf-scrolltext>When the city refuses to let go of you, a few quiet minutes of guided calm can change everything that follows.</p></section>
-<section class="stack wrap" id="work"><h2 data-mf-reveal>Built to unwind you</h2>
+<section class="mq-band"><div class="wrap mq-in"><div data-mf-marquee="55"><span>Sleep Stories</span><span>Guided Meditation</span><span>Stress Relief</span><span>Daily Calm</span><span>Mindful Living</span></div><button type="button" class="btn btn--ghost mq-pause" data-mf-pause aria-pressed="false" aria-label="Pause the scrolling strip">Pause</button></div></section>
+<section class="manifesto wrap"><p class="lede" data-mf-scrolltext>When the city refuses to slow down, your mind deserves a place that does — a nightly ritual built around genuine stillness.</p></section>
+<section class="stack wrap" id="work"><h2 data-mf-reveal>Built for Better Sleep</h2>
   
   <div class="stack-slot"><article class="stack-card glass--strong glass" style="top:calc(88px + 0px)">
-    <img src="https://images.pexels.com/photos/31379836/pexels-photo-31379836.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="Sleep stories that work" loading="lazy" decoding="async">
-    <div class="stack-body"><span class="micro">01</span><h3>Sleep stories that work</h3><p>Narrated audio journeys crafted to slow your thoughts and carry you gently into sleep.</p></div>
+    <img src="https://images.pexels.com/photos/6585981/pexels-photo-6585981.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="Sleep Stories That Work" loading="lazy" decoding="async">
+    <div class="stack-body"><span class="micro">01</span><h3>Sleep Stories That Work</h3><p>Soothing narratives read in calming voices guide your mind away from the day's noise and into natural sleep.</p></div>
   </article></div>
   <div class="stack-slot"><article class="stack-card glass--strong glass" style="top:calc(88px + 26px)">
-    <img src="https://images.pexels.com/photos/28245667/pexels-photo-28245667.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="Guided meditation, anytime" loading="lazy" decoding="async">
-    <div class="stack-body"><span class="micro">02</span><h3>Guided meditation, anytime</h3><p>Short, focused sessions led by specialists that fit between meetings, commutes, and everything else.</p></div>
+    <img src="https://images.pexels.com/photos/6585963/pexels-photo-6585963.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="Guided Meditation, Any Time" loading="lazy" decoding="async">
+    <div class="stack-body"><span class="micro">02</span><h3>Guided Meditation, Any Time</h3><p>Choose from beginner-friendly to deep-practice sessions, each designed to reduce anxiety and restore focus.</p></div>
   </article></div>
   <div class="stack-slot"><article class="stack-card glass--strong glass" style="top:calc(88px + 52px)">
-    <img src="https://images.pexels.com/photos/6951882/pexels-photo-6951882.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="Music for a quieter mind" loading="lazy" decoding="async">
-    <div class="stack-body"><span class="micro">03</span><h3>Music for a quieter mind</h3><p>Curated soundscapes and sleep music designed to ease anxiety and create the right conditions for rest.</p></div>
+    <img src="https://images.pexels.com/photos/6517401/pexels-photo-6517401.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="Music for Winding Down" loading="lazy" decoding="async">
+    <div class="stack-body"><span class="micro">03</span><h3>Music for Winding Down</h3><p>Curated soundscapes and sleep music create the sonic environment your nervous system needs to fully let go.</p></div>
   </article></div>
   <div class="stack-slot"><article class="stack-card glass--strong glass" style="top:calc(88px + 78px)">
-    <img src="https://images.pexels.com/photos/6943421/pexels-photo-6943421.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="Start with 7 Days of Calm" loading="lazy" decoding="async">
-    <div class="stack-body"><span class="micro">04</span><h3>Start with 7 Days of Calm</h3><p>A structured introduction to daily mindfulness that builds a practice you'll actually want to keep.</p></div>
+    <img src="https://images.pexels.com/photos/6941315/pexels-photo-6941315.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="Daily Offerings, Fresh Each Morning" loading="lazy" decoding="async">
+    <div class="stack-body"><span class="micro">04</span><h3>Daily Offerings, Fresh Each Morning</h3><p>A new guided meditation every day builds a gentle, consistent practice that fits around a demanding London schedule.</p></div>
   </article></div>
 </section>
 
-<section class="sheet hsec" data-mf-hscroll aria-label="Built to unwind you">
+<section class="sheet hsec" data-mf-hscroll aria-label="Built for Better Sleep">
   <div class="hs-pin"><div class="hs-track">
-    <div class="hs-lead"><h2>Built to unwind you</h2><p>When the city refuses to let go of you, a few quiet minutes of guided calm can change everything that follows.</p></div>
-    <article class="hs-card"><img src="https://images.pexels.com/photos/31379836/pexels-photo-31379836.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" width="5195" height="3463" loading="lazy" decoding="async">
-      <div class="hs-body"><span class="micro">Stress</span><h3>Relief in the moment</h3><p>Get in-the-moment calm for stress and anxiety so you can return to yourself, not just your to-do list.</p></div>
-    </article><article class="hs-card"><img src="https://images.pexels.com/photos/28245667/pexels-photo-28245667.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" width="5961" height="3974" loading="lazy" decoding="async">
-      <div class="hs-body"><span class="micro">Sleep</span><h3>Fall asleep naturally</h3><p>Stop lying awake replaying the day — sleep meditations help your nervous system finally switch off.</p></div>
-    </article><article class="hs-card"><img src="https://images.pexels.com/photos/6951882/pexels-photo-6951882.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" width="6185" height="4123" loading="lazy" decoding="async">
-      <div class="hs-body"><span class="micro">Resilience</span><h3>Navigate life mindfully</h3><p>Daily guided meditations build the inner steadiness to handle whatever London throws at you.</p></div>
-    </article><article class="hs-card"><img src="https://images.pexels.com/photos/6943421/pexels-photo-6943421.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" width="6240" height="4160" loading="lazy" decoding="async">
-      <div class="hs-body"><span class="micro">Habit</span><h3>A practice that sticks</h3><p>21 Days of Calm turns one good intention into a routine your body and mind start to rely on.</p></div>
-    </article><article class="hs-card"><img src="https://images.pexels.com/photos/8416437/pexels-photo-8416437.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" width="6000" height="4000" loading="lazy" decoding="async">
-      <div class="hs-body"><span class="micro">Burnout</span><h3>Support when it matters</h3><p>Content developed with stress and burnout specialists — not wellness fluff, but tools that actually help.</p></div>
+    <div class="hs-lead"><h2>Built for Better Sleep</h2><p>When the city refuses to slow down, your mind deserves a place that does — a nightly ritual built around genuine stillness.</p></div>
+    <article class="hs-card"><img src="https://images.pexels.com/photos/6585981/pexels-photo-6585981.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" width="6144" height="3456" loading="lazy" decoding="async">
+      <div class="hs-body"><span class="micro">Stress</span><h3>In-the-Moment Relief</h3><p>Quick sessions meet you wherever the pressure peaks — on the Tube, at your desk, or in the quiet before bed.</p></div>
+    </article><article class="hs-card"><img src="https://images.pexels.com/photos/6585963/pexels-photo-6585963.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" width="5868" height="3301" loading="lazy" decoding="async">
+      <div class="hs-body"><span class="micro">Sleep</span><h3>Fall Asleep Naturally</h3><p>Sleep meditations ease you from wired to rested without relying on anything but your own breath and a gentle voice.</p></div>
+    </article><article class="hs-card"><img src="https://images.pexels.com/photos/6517401/pexels-photo-6517401.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" width="6562" height="4375" loading="lazy" decoding="async">
+      <div class="hs-body"><span class="micro">Mindset</span><h3>Resilience Over Time</h3><p>Programmes like 7 Days of Calm and 21 Days of Calm build the kind of inner steadiness that lasts beyond the session.</p></div>
+    </article><article class="hs-card"><img src="https://images.pexels.com/photos/6941315/pexels-photo-6941315.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" width="6240" height="4160" loading="lazy" decoding="async">
+      <div class="hs-body"><span class="micro">Flexibility</span><h3>Your Pace, Your Practice</h3><p>Whether you have three minutes or thirty, there is always something here that meets you exactly where you are tonight.</p></div>
+    </article><article class="hs-card"><img src="https://images.pexels.com/photos/7445004/pexels-photo-7445004.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" width="5472" height="3648" loading="lazy" decoding="async">
+      <div class="hs-body"><span class="micro">Habit</span><h3>A Practice That Sticks</h3><p>Daily structure and gentle variety make returning each evening feel less like discipline and more like something you actually want.</p></div>
     </article>
     <div class="hs-tail"><a class="btn" href="#lead-form" data-mf-magnet="90">Try it free</a></div>
   </div></div>
 </section>
 <section class="faq wrap" id="faq"><h2 data-mf-reveal data-mf-split="words">Questions, answered</h2>
   <div class="faq-in">
-  <details class="faq-item" data-mf-reveal><summary>I've tried meditation before and couldn't stick with it — why would this be different?<span class="faq-x" aria-hidden="true">+</span></summary><p>Calm is built around short, accessible sessions rather than demanding long sits. The variety of sleep stories, music, and guided meditation means you find what works for your brain specifically, not a one-size approach. A busy mind is exactly who this was made for.</p></details><details class="faq-item" data-mf-reveal><summary>Will this actually help me fall asleep faster, or is it just background noise?<span class="faq-x" aria-hidden="true">+</span></summary><p>Sleep stories and sleep meditations are purposefully structured to slow cognitive activity, not just mask it with sound. Many people find they drift off before a story even ends. The effect tends to deepen the more consistently you use it.</p></details><details class="faq-item" data-mf-reveal><summary>How much time do I need to commit each day?<span class="faq-x" aria-hidden="true">+</span></summary><p>There is no minimum. Some sessions are just a few minutes long and designed to fit into a lunch break or a commute. Even a single short guided meditation before bed can shift how quickly your mind settles.</p></details><details class="faq-item" data-mf-reveal><summary>What does the free trial include — will I hit a paywall immediately?<span class="faq-x" aria-hidden="true">+</span></summary><p>The free trial gives you genuine access to explore the app, including sleep stories and guided meditations, before any commitment is required. You won't be asked for a card to start, and you can decide if it's right for you on your own terms.</p></details>
+  <details class="faq-item" data-mf-reveal><summary>I've tried meditation before and my mind just won't stop — will this actually help?<span class="faq-x" aria-hidden="true">+</span></summary><p>Calm is specifically built for people with busy, resistant minds. Sleep Stories and guided meditations give your brain something gentle to follow, which is far more effective than asking it to simply go blank. Many people notice a difference from the very first session.</p></details><details class="faq-item" data-mf-reveal><summary>How is this different from just putting on a podcast or YouTube video?<span class="faq-x" aria-hidden="true">+</span></summary><p>Calm's content is purposefully crafted by sleep specialists and mindfulness experts to guide your nervous system toward rest, not just distract it. The structure, pacing, and tone are all deliberately designed to lower cortisol and prepare you for sleep — something a random video cannot replicate.</p></details><details class="faq-item" data-mf-reveal><summary>I work long hours in London — is there enough flexibility to fit this into my routine?<span class="faq-x" aria-hidden="true">+</span></summary><p>Absolutely. Sessions range from a few minutes to longer programmes, and the daily offerings mean there is always something fresh and appropriate for however much time you have. You can use it on your commute, at lunch, or as part of a proper wind-down routine at night.</p></details><details class="faq-item" data-mf-reveal><summary>What happens after the free trial — am I locked in?<span class="faq-x" aria-hidden="true">+</span></summary><p>You can cancel at any time before the trial ends without being charged. The free trial is genuinely free — it exists so you can experience the app and decide for yourself whether it is worth continuing, with no pressure and no obligation.</p></details>
   </div>
 </section>
-<section class="cta wrap" id="cta"><h2 data-mf-reveal data-mf-split="words">Tonight could be different</h2><p data-mf-reveal>Try Calm free and discover what it feels like to genuinely switch off — sleep app, guided meditation, and more, all in one place.</p><a class="btn" href="#lead-form" data-mf-reveal data-mf-magnet="120">Try it free</a></section><footer class="wrap"><p class="micro">Calm &copy; 2026</p></footer>
+<section class="cta wrap" id="cta"><h2 data-mf-reveal data-mf-split="words">Tonight, Choose to Switch Off</h2><p data-mf-reveal>Start your free trial and discover what a genuinely quiet mind feels like before you even finish your first session.</p><a class="btn" href="#lead-form" data-mf-reveal data-mf-magnet="120">Try it free</a></section><footer class="wrap"><p class="micro">Calm &copy; 2026</p></footer>
 <script>
 (function(){
 'use strict';
@@ -772,8 +781,22 @@ function parallax(){
   })();
 }
 
+/* fixed nav gains its frosted-bar state once the page scrolls — works under reduced motion too
+ * (it is a legibility affordance, not an animation) */
+function navBar(){
+  var nav = d.querySelector('.mf-nav');
+  if (!nav) return;
+  var on = false;
+  function check(){
+    var s = (w.scrollY || d.documentElement.scrollTop) > 24;
+    if (s !== on){ on = s; nav.classList.toggle('is-scrolled', on); }
+  }
+  w.addEventListener('scroll', check, { passive:true });
+  check();
+}
+
 ready(function(){
-  split(); ladder(); reveals(); counters();
+  split(); ladder(); reveals(); counters(); navBar();
   if (STATIC) return;
   initVideos(); spotlight(); marquees(); magnets(); scrollText(); hscroll(); parallax();
   RM.addEventListener && RM.addEventListener('change', function(){ ladder(); });
@@ -795,13 +818,13 @@ ready(function(){
       <div class="lf-err" role="alert" style="display:none;margin-top:12px;color:#b3261e;font-weight:600;text-align:center"></div>
     </form></div><style>
 html{scroll-behavior:smooth}
-/* mobile safety net — guarantees no horizontal overflow or clipped media on phones, whatever
+/* mobile safety net â€” guarantees no horizontal overflow or clipped media on phones, whatever
    the layout does. Element-level specificity, so real .class rules (object-fit boxes) still win. */
 html,body{overflow-x:hidden;max-width:100%}
 img,svg,video,iframe{max-width:100%;height:auto}
 *{min-width:0}
 @media(max-width:600px){
-  /* cap inline pixel-width elements so they never overflow — but leave horizontal scroll
+  /* cap inline pixel-width elements so they never overflow â€” but leave horizontal scroll
      containers (swipe rows) alone so their snap-scrolling still works */
   [style*="width:"][style*="px"]:not([style*="overflow-x"]):not([style*="scroll-snap"]){max-width:100%}
 }
@@ -825,7 +848,7 @@ img,svg,video,iframe{max-width:100%;height:auto}
   function ready(fn){if(d.readyState!=='loading')fn();else d.addEventListener('DOMContentLoaded',fn)}
   function num(el,name,fb){var v=el.getAttribute('data-'+name);var n=v===null?NaN:parseFloat(v);return isNaN(n)?fb:n}
   /* Swiper is a COMPONENT, not decoration: it must work with reduced motion, with no GSAP, and in
-     the print/static paths. It also needs a real stop control (WCAG 2.2.2) — pauseOnMouseEnter is
+     the print/static paths. It also needs a real stop control (WCAG 2.2.2) â€” pauseOnMouseEnter is
      pointer-only and autoplay previously resumed after interaction. */
   function initSwiper(reduced){
     if(!window.Swiper)return;
@@ -856,7 +879,7 @@ img,svg,video,iframe{max-width:100%;height:auto}
   ready(function(){
     // ?static kills all motion (screenshots, PDF export, previews); inside the Elementor editor
     // the engine must stay off entirely or it fights the editor's own DOM manipulation. These two
-    // guards predate the Swiper/marquee rework and were lost in it — restored deliberately.
+    // guards predate the Swiper/marquee rework and were lost in it â€” restored deliberately.
     if(/[?&]static\b/.test(location.search))return;
     if(d.body.classList.contains('elementor-editor-active'))return;
     if(!window.gsap){console.warn('[motion] GSAP not loaded');return}
@@ -934,13 +957,13 @@ img,svg,video,iframe{max-width:100%;height:auto}
       // measure after webfonts swap, otherwise the width (and therefore the speed) is wrong
       if(d.fonts&&d.fonts.ready)d.fonts.ready.then(function(){w=(track.scrollWidth||1)+gap;run()});else run();
     });
-    // Swiper coverflow galleries — the immersive 3D image carousel (Bihar-tourism-style feel).
+    // Swiper coverflow galleries â€” the immersive 3D image carousel (Bihar-tourism-style feel).
     // Real brand photos fan out in 3D and swipe/autoplay; touch-native so it stays smooth on mobile.
     window.addEventListener('load',function(){if(hasST)ScrollTrigger.refresh()})
   })
 })();
 </script>
-<script>(function(){var EP="https://wp-connect-goodfor-a7f4720c.koyeb.app/api/landing/lead",JOB="lf_mskc4vzs_f5cc01c0";
+<script>(function(){var EP="https://wp-connect-goodfor-a7f4720c.koyeb.app/api/landing/lead",JOB="lf_mskehs30_c333b2f6";
 function wire(f){
   if(!f||f.__lfWired)return;f.__lfWired=1;
   f.addEventListener('submit',function(e){
@@ -951,7 +974,7 @@ function wire(f){
     var btn=f.querySelector('button[type=submit],[type=submit]');var lbl=btn?btn.textContent:'';
     var ok=f.querySelector('.lf-ok'),err=f.querySelector('.lf-err');
     if(err){err.style.display='none';err.textContent=''}
-    if(btn){btn.disabled=true;btn.textContent='Sending…'}
+    if(btn){btn.disabled=true;btn.textContent='Sendingâ€¦'}
     var done=function(good,msg){
       if(btn){btn.disabled=!good;btn.textContent=good?'Sent \u2713':lbl}
       if(good){

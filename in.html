@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>आपकी थाली में असल क्या है? — GoodFor</title>
-<meta name="description" content="GoodFor से फूड लेबल स्कैन करें और जानें हर पैकेट में क्या छुपा है — परिवार की सेहत के लिए।">
+<title>आपके खाने में असल में क्या है? — GoodFor</title>
+<meta name="description" content="बारकोड स्कैन करें और जानें कि आपके परिवार की थाली में कौन से तत्व छुपे हैं।">
 <meta name="theme-color" content="#f0ede6">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +21,7 @@ p,li,blockquote,dd,figcaption{line-height:1.7}
 body{letter-spacing:0!important}
 </style>
 <style>:root{
-  --bg:#f0ede6; --ink:#1a2e0a; --dim:#747e66; --line:#00000014;
+  --bg:#f0ede6; --ink:#1a3008; --dim:#747f65; --line:#00000014;
   --at:#2d5016; --on-at:#ffffff;
   --fd:'Archivo',Georgia,serif; --fb:'Inter',system-ui,-apple-system,sans-serif;
   --pad:clamp(20px,4.5vw,72px);
@@ -149,15 +149,24 @@ p{margin:0;text-wrap:pretty}
   .btn{transition:none}
 }
 @media print{ .bed,.pausebtn{display:none} [data-mf-in],[data-mf-reveal]{opacity:1;transform:none;filter:none} }
-.mf-nav{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;
-  justify-content:space-between;gap:24px;padding-block:clamp(14px,2vh,26px)}
+.mf-nav{position:fixed;top:0;left:0;right:0;z-index:120;display:flex;align-items:center;
+  justify-content:space-between;gap:24px;padding-block:clamp(14px,2vh,26px);
+  transition:background .35s var(--ease),padding .35s var(--ease),box-shadow .35s var(--ease)}
+/* Past the hero the fixed nav must read as a BAR, not loose text drifting over sections:
+   frosted background + hairline, slightly compressed. Toggled by the runtime at 24px scroll. */
+.mf-nav.is-scrolled{background:color-mix(in srgb,var(--bg) 80%,transparent);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  padding-block:clamp(10px,1.2vh,16px);
+  box-shadow:0 1px 0 var(--line),0 12px 30px -22px rgba(0,0,0,.4)}
 .mf-logo{font-family:var(--fd);font-size:1.35rem;letter-spacing:-.02em;text-decoration:none}
 .mf-links{display:none;gap:4px;border-radius:999px;padding:5px}
 .mf-links a{padding:.5em 1em;border-radius:999px;font-size:.86rem;text-decoration:none;color:var(--dim);
   transition:color .3s var(--ease),background .3s var(--ease)}
 .mf-links a:hover{color:var(--ink);background:rgba(255,255,255,.08)}
 @media(min-width:900px){.mf-links{display:flex}}
-.hero-in{margin-top:auto;padding-bottom:clamp(40px,7vh,96px);max-width:min(100%,1180px)}
+/* the nav is FIXED (out of flow), so every hero must clear it itself — without the top padding
+   a bed-less hero's headline renders at the very top, colliding with the nav row */
+.hero-in{margin-top:auto;padding-top:clamp(84px,11vh,130px);padding-bottom:clamp(40px,7vh,96px);max-width:min(100%,1180px)}
 .hero-in.is-sticky{position:sticky;top:0;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end}
 .hero-sub{margin-top:clamp(18px,2.4vh,30px);max-width:46ch;color:var(--dim);font-size:1.06rem}
 .hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:clamp(24px,3.4vh,40px)}
@@ -267,29 +276,29 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
   <nav class="mf-links glass" aria-label="Primary"><a href="#work">Work</a><a href="#studio">Studio</a><a href="#approach">Approach</a><a href="#contact">Contact</a></nav>
   <a class="btn" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener" data-mf-in="chrome" data-mf-magnet="90">App download karein</a>
 </header>
-  <div class="hero-in wrap gh-center"><p class="micro" data-mf-in="eyebrow">खाना स्कैनर — अब लखनऊ में</p>
-    <h1 data-mf-in="headline" data-mf-split="words">आपकी थाली में असल क्या है?</h1>
-    <p class="hero-sub" data-mf-in="sub">GoodFor से फूड लेबल स्कैन करें और जानें हर पैकेट में क्या छुपा है — परिवार की सेहत के लिए।</p>
+  <div class="hero-in wrap gh-center"><p class="micro" data-mf-in="eyebrow">खाना स्कैनर ऐप</p>
+    <h1 data-mf-in="headline" data-mf-split="words">आपके खाने में असल में क्या है?</h1>
+    <p class="hero-sub" data-mf-in="sub">बारकोड स्कैन करें और जानें कि आपके परिवार की थाली में कौन से तत्व छुपे हैं।</p>
     <div class="hero-cta" data-mf-in="cta"><a class="btn" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener" data-mf-magnet="110">App download karein</a></div></div>
 </section>
-<section class="sheet mq-band"><div class="wrap mq-in"><div data-mf-marquee="55"><span>फूड लेबल जाँच</span><span>एलर्जन अलर्ट</span><span>सेहतमंद विकल्प</span><span>स्किनकेयर स्कैन</span><span>परिवार के लिए</span></div><button type="button" class="btn btn--ghost mq-pause" data-mf-pause aria-pressed="false" aria-label="Pause the scrolling strip">Pause</button></div></section>
+<section class="sheet mq-band"><div class="wrap mq-in"><div data-mf-marquee="55"><span>सेहतमंद खरीदारी</span><span>फूड लेबल</span><span>एलर्जी जांच</span><span>साफ सामग्री</span><span>बेहतर विकल्प</span></div><button type="button" class="btn btn--ghost mq-pause" data-mf-pause aria-pressed="false" aria-label="Pause the scrolling strip">Pause</button></div></section>
 <section class="frows wrap" id="work"><h2 data-mf-reveal data-mf-split="words">GoodFor क्या करता है</h2>
   
   <div class="frow" data-mf-reveal>
-    <figure class="frow-media"><img src="media/in-site-1.png" alt="बारकोड स्कैन करें" width="1536" height="1024" loading="lazy" decoding="async"></figure>
-    <div class="frow-copy"><span class="micro">01</span><h3>बारकोड स्कैन करें</h3><p>दाल, बिस्किट या नमकीन — किसी भी पैकेट का बारकोड स्कैन करते ही सामग्री और छुपे जोखिम सामने आ जाते हैं।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
+    <figure class="frow-media"><img src="media/in-site-1.png" alt="झटपट बारकोड स्कैन" width="1536" height="1024" loading="lazy" decoding="async"></figure>
+    <div class="frow-copy"><span class="micro">01</span><h3>झटपट बारकोड स्कैन</h3><p>किसी भी पैकेटबंद खाने या स्किनकेयर प्रोडक्ट का बारकोड स्कैन करें और तुरंत सामग्री, सुरक्षा और छुपे जोखिम जानें।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
   </div>
   <div class="frow frow--rev" data-mf-reveal>
-    <figure class="frow-media"><img src="media/in-site-2.png" alt="आपकी सेहत, आपका स्कोर" width="1254" height="1254" loading="lazy" decoding="async"></figure>
-    <div class="frow-copy"><span class="micro">02</span><h3>आपकी सेहत, आपका स्कोर</h3><p>आपकी एलर्जी और स्वास्थ्य ज़रूरतों के हिसाब से हर प्रोडक्ट का सुरक्षा स्कोर अलग होता है।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
+    <figure class="frow-media"><img src="media/in-site-2.png" alt="आपके लिए सेफ्टी स्कोर" width="1254" height="1254" loading="lazy" decoding="async"></figure>
+    <div class="frow-copy"><span class="micro">02</span><h3>आपके लिए सेफ्टी स्कोर</h3><p>आपकी सेहत, एलर्जी और संवेदनशीलता के हिसाब से हर प्रोडक्ट का व्यक्तिगत सुरक्षा स्कोर मिलता है।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
   </div>
   <div class="frow" data-mf-reveal>
-    <figure class="frow-media"><img src="media/in-site-3.png" alt="बेहतर विकल्प खोजें" width="1254" height="1254" loading="lazy" decoding="async"></figure>
-    <div class="frow-copy"><span class="micro">03</span><h3>बेहतर विकल्प खोजें</h3><p>अगर कोई चीज़ ठीक नहीं, GoodFor तुरंत साफ़-सुथरा और सेहतमंद विकल्प सुझाता है।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
+    <figure class="frow-media"><img src="media/in-site-3.png" alt="एलर्जन अपने आप पकड़े" width="1254" height="1254" loading="lazy" decoding="async"></figure>
+    <div class="frow-copy"><span class="micro">03</span><h3>एलर्जन अपने आप पकड़े</h3><p>सामग्री क्या करती है यह समझें और संभावित एलर्जन या त्वचा-जलन पैदा करने वाले तत्व खुद-ब-खुद फ्लैग हों।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
   </div>
   <div class="frow frow--rev" data-mf-reveal>
-    <figure class="frow-media"><img src="media/in-site-4.webp" alt="स्मार्ट शॉपिंग बास्केट" width="683" height="1024" loading="lazy" decoding="async"></figure>
-    <div class="frow-copy"><span class="micro">04</span><h3>स्मार्ट शॉपिंग बास्केट</h3><p>पूरे बाज़ार की खरीदारी का हेल्थ स्कोर एक जगह देखें और ज़रूरत पड़े तो सुधारें।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
+    <figure class="frow-media"><img src="media/in-site-4.webp" alt="बेहतर विकल्प खोजें" width="683" height="1024" loading="lazy" decoding="async"></figure>
+    <div class="frow-copy"><span class="micro">04</span><h3>बेहतर विकल्प खोजें</h3><p>जब कोई प्रोडक्ट सही न हो, GoodFor आपको तुरंत स्वस्थ और साफ विकल्प सुझाता है।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
   </div>
 </section>
 
@@ -298,10 +307,10 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
   </div></section>
 <section class="faq wrap" id="faq"><h2 data-mf-reveal data-mf-split="words">Questions, answered</h2>
   <div class="faq-in">
-  <details class="faq-item" data-mf-reveal><summary>क्या यह app हिन्दी में काम करता है?<span class="faq-x" aria-hidden="true">+</span></summary><p>GoodFor की जानकारी स्पष्ट और सरल भाषा में दी जाती है। लखनऊ जैसे हिन्दी-भाषी शहरों के लिए यह बिल्कुल उपयुक्त है। आगे और भाषाओं में भी सुविधा बढ़ाई जा रही है।</p></details><details class="faq-item" data-mf-reveal><summary>क्या भारतीय पैकेज्ड खाने के बारकोड इसमें काम करते हैं?<span class="faq-x" aria-hidden="true">+</span></summary><p>हाँ, GoodFor भारत में मिलने वाले पैकेज्ड फूड और स्किनकेयर प्रोडक्ट के बारकोड स्कैन करता है। बिस्किट, दाल, आटा, नमकीन — सब कुछ आज़माएँ। नए प्रोडक्ट लगातार जोड़े जा रहे हैं।</p></details><details class="faq-item" data-mf-reveal><summary>क्या app इस्तेमाल करना मुश्किल है?<span class="faq-x" aria-hidden="true">+</span></summary><p>बिल्कुल नहीं — बस कैमरा खोलें, बारकोड पर रखें, और नतीजा देखें। कोई तकनीकी जानकारी ज़रूरी नहीं। पहली बार स्मार्टफोन इस्तेमाल करने वाले भी आसानी से चला सकते हैं।</p></details><details class="faq-item" data-mf-reveal><summary>क्या यह app मुफ़्त है?<span class="faq-x" aria-hidden="true">+</span></summary><p>GoodFor download करना और बुनियादी खाना स्कैनर सुविधा इस्तेमाल करना निःशुल्क है। App Store या Google Play से अभी download करें और पहले दिन से फ़र्क महसूस करें।</p></details>
+  <details class="faq-item" data-mf-reveal><summary>क्या GoodFor भारत में मिलने वाले प्रोडक्ट्स को पहचानता है?<span class="faq-x" aria-hidden="true">+</span></summary><p>हाँ, GoodFor भारत में बिकने वाले पैकेटबंद खाने और स्किनकेयर प्रोडक्ट्स के बारकोड स्कैन करने में सक्षम है। ऐप लगातार नए प्रोडक्ट्स जोड़ता रहता है ताकि आपकी जानकारी हमेशा ताज़ा रहे।</p></details><details class="faq-item" data-mf-reveal><summary>क्या यह ऐप हिन्दी में काम करता है?<span class="faq-x" aria-hidden="true">+</span></summary><p>GoodFor का इंटरफेस सरल और आसान है जिसे कोई भी समझ सकता है। ऐप को और भी स्थानीय बनाने का काम जारी है — अभी भी इसकी जानकारी स्पष्ट और उपयोगी है।</p></details><details class="faq-item" data-mf-reveal><summary>क्या मुझे हर प्रोडक्ट के लिए इंटरनेट चाहिए?<span class="faq-x" aria-hidden="true">+</span></summary><p>स्कैन और विस्तृत जानकारी के लिए इंटरनेट कनेक्शन जरूरी है। एक बार देखी गई जानकारी ऐप में सेव हो जाती है जिसे आप बाद में भी देख सकते हैं।</p></details><details class="faq-item" data-mf-reveal><summary>क्या यह ऐप बच्चों और बुजुर्गों के लिए भी उपयोगी है?<span class="faq-x" aria-hidden="true">+</span></summary><p>बिल्कुल। आप अपने परिवार के हर सदस्य की एलर्जी, परहेज और स्वास्थ्य जरूरतें ऐप में सेट कर सकते हैं। GoodFor फिर हर प्रोडक्ट को उसी हिसाब से जाँचकर आपको सूचित करता है।</p></details>
   </div>
 </section>
-<section class="cta wrap" id="cta"><h2 data-mf-reveal data-mf-split="words">आज से समझदार खरीदारी शुरू करें</h2><p data-mf-reveal>GoodFor app download करें और अपने परिवार की थाली को सच में सेहतमंद बनाएँ।</p><a class="btn" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener" data-mf-reveal data-mf-magnet="120">App download karein</a></section><footer class="wrap"><p class="micro">GoodFor &copy; 2026</p></footer>
+<section class="cta wrap" id="cta"><h2 data-mf-reveal data-mf-split="words">अब अनजान नहीं रहेगा थाली का सच</h2><p data-mf-reveal>GoodFor डाउनलोड करें और आज से ही सेहतमंद खरीदारी की शुरुआत करें।</p><a class="btn" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener" data-mf-reveal data-mf-magnet="120">App download karein</a></section><footer class="wrap"><p class="micro">GoodFor &copy; 2026</p></footer>
 <script>
 (function(){
 'use strict';
@@ -762,8 +771,22 @@ function parallax(){
   })();
 }
 
+/* fixed nav gains its frosted-bar state once the page scrolls — works under reduced motion too
+ * (it is a legibility affordance, not an animation) */
+function navBar(){
+  var nav = d.querySelector('.mf-nav');
+  if (!nav) return;
+  var on = false;
+  function check(){
+    var s = (w.scrollY || d.documentElement.scrollTop) > 24;
+    if (s !== on){ on = s; nav.classList.toggle('is-scrolled', on); }
+  }
+  w.addEventListener('scroll', check, { passive:true });
+  check();
+}
+
 ready(function(){
-  split(); ladder(); reveals(); counters();
+  split(); ladder(); reveals(); counters(); navBar();
   if (STATIC) return;
   initVideos(); spotlight(); marquees(); magnets(); scrollText(); hscroll(); parallax();
   RM.addEventListener && RM.addEventListener('change', function(){ ladder(); });
@@ -785,13 +808,13 @@ ready(function(){
       <div class="lf-err" role="alert" style="display:none;margin-top:12px;color:#b3261e;font-weight:600;text-align:center"></div>
     </form></div><style>
 html{scroll-behavior:smooth}
-/* mobile safety net — guarantees no horizontal overflow or clipped media on phones, whatever
+/* mobile safety net â€” guarantees no horizontal overflow or clipped media on phones, whatever
    the layout does. Element-level specificity, so real .class rules (object-fit boxes) still win. */
 html,body{overflow-x:hidden;max-width:100%}
 img,svg,video,iframe{max-width:100%;height:auto}
 *{min-width:0}
 @media(max-width:600px){
-  /* cap inline pixel-width elements so they never overflow — but leave horizontal scroll
+  /* cap inline pixel-width elements so they never overflow â€” but leave horizontal scroll
      containers (swipe rows) alone so their snap-scrolling still works */
   [style*="width:"][style*="px"]:not([style*="overflow-x"]):not([style*="scroll-snap"]){max-width:100%}
 }
@@ -815,7 +838,7 @@ img,svg,video,iframe{max-width:100%;height:auto}
   function ready(fn){if(d.readyState!=='loading')fn();else d.addEventListener('DOMContentLoaded',fn)}
   function num(el,name,fb){var v=el.getAttribute('data-'+name);var n=v===null?NaN:parseFloat(v);return isNaN(n)?fb:n}
   /* Swiper is a COMPONENT, not decoration: it must work with reduced motion, with no GSAP, and in
-     the print/static paths. It also needs a real stop control (WCAG 2.2.2) — pauseOnMouseEnter is
+     the print/static paths. It also needs a real stop control (WCAG 2.2.2) â€” pauseOnMouseEnter is
      pointer-only and autoplay previously resumed after interaction. */
   function initSwiper(reduced){
     if(!window.Swiper)return;
@@ -846,7 +869,7 @@ img,svg,video,iframe{max-width:100%;height:auto}
   ready(function(){
     // ?static kills all motion (screenshots, PDF export, previews); inside the Elementor editor
     // the engine must stay off entirely or it fights the editor's own DOM manipulation. These two
-    // guards predate the Swiper/marquee rework and were lost in it — restored deliberately.
+    // guards predate the Swiper/marquee rework and were lost in it â€” restored deliberately.
     if(/[?&]static\b/.test(location.search))return;
     if(d.body.classList.contains('elementor-editor-active'))return;
     if(!window.gsap){console.warn('[motion] GSAP not loaded');return}
@@ -924,13 +947,13 @@ img,svg,video,iframe{max-width:100%;height:auto}
       // measure after webfonts swap, otherwise the width (and therefore the speed) is wrong
       if(d.fonts&&d.fonts.ready)d.fonts.ready.then(function(){w=(track.scrollWidth||1)+gap;run()});else run();
     });
-    // Swiper coverflow galleries — the immersive 3D image carousel (Bihar-tourism-style feel).
+    // Swiper coverflow galleries â€” the immersive 3D image carousel (Bihar-tourism-style feel).
     // Real brand photos fan out in 3D and swipe/autoplay; touch-native so it stays smooth on mobile.
     window.addEventListener('load',function(){if(hasST)ScrollTrigger.refresh()})
   })
 })();
 </script>
-<script>(function(){var EP="https://wp-connect-goodfor-a7f4720c.koyeb.app/api/landing/lead",JOB="lf_mskc4tvw_6a04c8b9";
+<script>(function(){var EP="https://wp-connect-goodfor-a7f4720c.koyeb.app/api/landing/lead",JOB="lf_mskehqww_dc9bb3ed";
 function wire(f){
   if(!f||f.__lfWired)return;f.__lfWired=1;
   f.addEventListener('submit',function(e){
@@ -941,7 +964,7 @@ function wire(f){
     var btn=f.querySelector('button[type=submit],[type=submit]');var lbl=btn?btn.textContent:'';
     var ok=f.querySelector('.lf-ok'),err=f.querySelector('.lf-err');
     if(err){err.style.display='none';err.textContent=''}
-    if(btn){btn.disabled=true;btn.textContent='Sending…'}
+    if(btn){btn.disabled=true;btn.textContent='Sendingâ€¦'}
     var done=function(good,msg){
       if(btn){btn.disabled=!good;btn.textContent=good?'Sent \u2713':lbl}
       if(good){
