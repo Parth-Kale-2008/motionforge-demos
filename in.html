@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>आपके खाने में असल में क्या है? — GoodFor</title>
-<meta name="description" content="बारकोड स्कैन करें और जानें कि आपके परिवार की थाली में कौन से तत्व छुपे हैं।">
-<meta name="theme-color" content="#f0ede6">
+<title>आपके खाने में असल में क्या छुपा है? — GoodFor</title>
+<meta name="description" content="GoodFor app से फूड लेबल स्कैन करें और जानें कि आपके परिवार की थाली में क्या सेहतमंद है, क्या नहीं।">
+<meta name="theme-color" content="#f2f0eb">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap">
-<link rel="preload" as="image" href="https://images.pexels.com/videos/4121625/chatting-customer-food-hypermarket-4121625.jpeg?auto=compress&amp;cs=tinysrgb&amp;fit=crop&amp;h=630&amp;w=1200" fetchpriority="high">
+<link rel="preload" as="image" href="https://images.pexels.com/videos/4121754/barcode-buying-cashier-consumerism-4121754.jpeg?auto=compress&amp;cs=tinysrgb&amp;fit=crop&amp;h=630&amp;w=1200" fetchpriority="high">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +21,7 @@ p,li,blockquote,dd,figcaption{line-height:1.7}
 body{letter-spacing:0!important}
 </style>
 <style>:root{
-  --bg:#f0ede6; --ink:#1a3008; --dim:#747f65; --line:#00000014;
+  --bg:#f2f0eb; --ink:#1a2e0a; --dim:#757f69; --line:#00000014;
   --at:#2d5016; --on-at:#ffffff;
   --fd:'Archivo',Georgia,serif; --fb:'Inter',system-ui,-apple-system,sans-serif;
   --pad:clamp(20px,4.5vw,72px);
@@ -149,15 +149,18 @@ p{margin:0;text-wrap:pretty}
   .btn{transition:none}
 }
 @media print{ .bed,.pausebtn{display:none} [data-mf-in],[data-mf-reveal]{opacity:1;transform:none;filter:none} }
-.mf-nav{position:fixed;top:0;left:0;right:0;z-index:120;display:flex;align-items:center;
-  justify-content:space-between;gap:24px;padding-block:clamp(14px,2vh,26px);
-  transition:background .35s var(--ease),padding .35s var(--ease),box-shadow .35s var(--ease)}
-/* Past the hero the fixed nav must read as a BAR, not loose text drifting over sections:
-   frosted background + hairline, slightly compressed. Toggled by the runtime at 24px scroll. */
-.mf-nav.is-scrolled{background:color-mix(in srgb,var(--bg) 80%,transparent);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  padding-block:clamp(10px,1.2vh,16px);
-  box-shadow:0 1px 0 var(--line),0 12px 30px -22px rgba(0,0,0,.4)}
+/* The nav lives at the TOP OF THE PAGE and scrolls away with the hero — explicit user decision
+   ("it should not come down"): absolute, not fixed. The scroll-progress bar (runtime) is the
+   only chrome that persists while reading. */
+.mf-nav{position:absolute;top:0;left:0;right:0;z-index:120;display:flex;align-items:center;
+  justify-content:space-between;gap:24px;padding-block:clamp(14px,2vh,26px)}
+.mf-links a{position:relative;text-decoration:none;padding:.35em .75em}
+.mf-links a::after{content:"";position:absolute;left:.75em;right:.75em;bottom:.15em;height:1.5px;
+  background:var(--at);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
+.mf-links a:hover::after{transform:scaleX(1)}
+/* the reading-progress hairline — persistent, tiny, alive */
+.mf-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:200;background:var(--at);
+  transform:scaleX(0);transform-origin:left;pointer-events:none}
 .mf-logo{font-family:var(--fd);font-size:1.35rem;letter-spacing:-.02em;text-decoration:none}
 .mf-links{display:none;gap:4px;border-radius:999px;padding:5px}
 .mf-links a{padding:.5em 1em;border-radius:999px;font-size:.86rem;text-decoration:none;color:var(--dim);
@@ -238,6 +241,15 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
 .faq-x{font-size:1.4rem;color:var(--dim);transition:transform .3s var(--ease)}
 .faq-item[open] .faq-x{transform:rotate(45deg)}
 .faq-item p{color:var(--dim);padding:0 0 20px;max-width:60ch}
+/* ---- hover physics: every card lifts, every image breathes — the page answers the cursor ---- */
+.fgrid-card,.hs-card,.stack-card,.hl{transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
+.fgrid-card:hover,.hs-card:hover{transform:translateY(-6px);box-shadow:0 26px 60px -28px rgba(0,0,0,.45)}
+.hl:hover{transform:translateY(-4px)}
+.frow-media{overflow:hidden}
+.frow-media img,.fgrid-card img,.hs-card img{transition:transform .7s var(--ease)}
+.frow:hover .frow-media img,.fgrid-card:hover img,.hs-card:hover img{transform:scale(1.05)}
+.step-n{transition:transform .35s var(--ease)}
+.steps-in li:hover .step-n{transform:scale(1.12) rotate(-6deg)}
 /* horizontal-scroll section */
 .hsec{position:relative}
 .hsec .hs-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden}
@@ -270,35 +282,35 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
 <body>
 
 <section class="stage" id="top">
-  <div class="bed" data-mf-parallax="0.06"><video muted playsinline preload="auto" data-mf-play="crossfade" poster="https://images.pexels.com/videos/4121625/chatting-customer-food-hypermarket-4121625.jpeg?auto=compress&amp;cs=tinysrgb&amp;fit=crop&amp;h=630&amp;w=1200" data-mf-lead="0.55" data-mf-fade="500" aria-hidden="true"><source src="https://videos.pexels.com/video-files/4121625/4121625-hd_1920_1080_25fps.mp4" type="video/mp4"></video></div><div class="grain" aria-hidden="true"></div><button type="button" class="pausebtn" data-mf-pause aria-pressed="false" aria-label="Pause background motion">Pause</button>
+  <div class="bed" data-mf-parallax="0.06"><video muted playsinline preload="auto" data-mf-play="crossfade" poster="https://images.pexels.com/videos/4121754/barcode-buying-cashier-consumerism-4121754.jpeg?auto=compress&amp;cs=tinysrgb&amp;fit=crop&amp;h=630&amp;w=1200" data-mf-lead="0.55" data-mf-fade="500" aria-hidden="true"><source src="https://videos.pexels.com/video-files/4121754/4121754-hd_1920_1080_25fps.mp4" type="video/mp4"></video></div><div class="grain" aria-hidden="true"></div><button type="button" class="pausebtn" data-mf-pause aria-pressed="false" aria-label="Pause background motion">Pause</button>
   <header class="mf-nav wrap" data-mf-in="chrome">
   <a class="mf-logo" href="#top">GoodFor</a>
   <nav class="mf-links glass" aria-label="Primary"><a href="#work">Work</a><a href="#studio">Studio</a><a href="#approach">Approach</a><a href="#contact">Contact</a></nav>
   <a class="btn" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener" data-mf-in="chrome" data-mf-magnet="90">App download karein</a>
 </header>
-  <div class="hero-in wrap gh-center"><p class="micro" data-mf-in="eyebrow">खाना स्कैनर ऐप</p>
-    <h1 data-mf-in="headline" data-mf-split="words">आपके खाने में असल में क्या है?</h1>
-    <p class="hero-sub" data-mf-in="sub">बारकोड स्कैन करें और जानें कि आपके परिवार की थाली में कौन से तत्व छुपे हैं।</p>
+  <div class="hero-in wrap gh-center"><p class="micro" data-mf-in="eyebrow">खाना स्कैनर अब हिंदी में</p>
+    <h1 data-mf-in="headline" data-mf-split="words">आपके खाने में असल में क्या छुपा है?</h1>
+    <p class="hero-sub" data-mf-in="sub">GoodFor app से फूड लेबल स्कैन करें और जानें कि आपके परिवार की थाली में क्या सेहतमंद है, क्या नहीं।</p>
     <div class="hero-cta" data-mf-in="cta"><a class="btn" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener" data-mf-magnet="110">App download karein</a></div></div>
 </section>
-<section class="sheet mq-band"><div class="wrap mq-in"><div data-mf-marquee="55"><span>सेहतमंद खरीदारी</span><span>फूड लेबल</span><span>एलर्जी जांच</span><span>साफ सामग्री</span><span>बेहतर विकल्प</span></div><button type="button" class="btn btn--ghost mq-pause" data-mf-pause aria-pressed="false" aria-label="Pause the scrolling strip">Pause</button></div></section>
+<section class="sheet mq-band"><div class="wrap mq-in"><div data-mf-marquee="55"><span>फूड लेबल जाँच</span><span>एलर्जी अलर्ट</span><span>सेहतमंद खरीदारी</span><span>स्किनकेयर स्कैन</span><span>बेहतर विकल्प</span></div><button type="button" class="btn btn--ghost mq-pause" data-mf-pause aria-pressed="false" aria-label="Pause the scrolling strip">Pause</button></div></section>
 <section class="frows wrap" id="work"><h2 data-mf-reveal data-mf-split="words">GoodFor क्या करता है</h2>
   
   <div class="frow" data-mf-reveal>
-    <figure class="frow-media"><img src="media/in-site-1.png" alt="झटपट बारकोड स्कैन" width="1536" height="1024" loading="lazy" decoding="async"></figure>
-    <div class="frow-copy"><span class="micro">01</span><h3>झटपट बारकोड स्कैन</h3><p>किसी भी पैकेटबंद खाने या स्किनकेयर प्रोडक्ट का बारकोड स्कैन करें और तुरंत सामग्री, सुरक्षा और छुपे जोखिम जानें।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
+    <figure class="frow-media"><img src="media/in-site-1.png" alt="बारकोड स्कैन करें" width="1536" height="1024" loading="lazy" decoding="async"></figure>
+    <div class="frow-copy"><span class="micro">01</span><h3>बारकोड स्कैन करें</h3><p>किसी भी पैकेट का बारकोड स्कैन करते ही उसके सभी ingredients, additives और छुपे हुए जोखिम सामने आ जाते हैं।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
   </div>
   <div class="frow frow--rev" data-mf-reveal>
-    <figure class="frow-media"><img src="media/in-site-2.png" alt="आपके लिए सेफ्टी स्कोर" width="1254" height="1254" loading="lazy" decoding="async"></figure>
-    <div class="frow-copy"><span class="micro">02</span><h3>आपके लिए सेफ्टी स्कोर</h3><p>आपकी सेहत, एलर्जी और संवेदनशीलता के हिसाब से हर प्रोडक्ट का व्यक्तिगत सुरक्षा स्कोर मिलता है।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
+    <figure class="frow-media"><img src="media/in-site-2.png" alt="आपके लिए पर्सनल स्कोर" width="1254" height="1254" loading="lazy" decoding="async"></figure>
+    <div class="frow-copy"><span class="micro">02</span><h3>आपके लिए पर्सनल स्कोर</h3><p>आपकी सेहत, एलर्जी और संवेदनशीलता के हिसाब से हर प्रोडक्ट का सेफ्टी स्कोर मिलता है।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
   </div>
   <div class="frow" data-mf-reveal>
-    <figure class="frow-media"><img src="media/in-site-3.png" alt="एलर्जन अपने आप पकड़े" width="1254" height="1254" loading="lazy" decoding="async"></figure>
-    <div class="frow-copy"><span class="micro">03</span><h3>एलर्जन अपने आप पकड़े</h3><p>सामग्री क्या करती है यह समझें और संभावित एलर्जन या त्वचा-जलन पैदा करने वाले तत्व खुद-ब-खुद फ्लैग हों।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
+    <figure class="frow-media"><img src="media/in-site-3.png" alt="बेहतर विकल्प खोजें" width="1254" height="1254" loading="lazy" decoding="async"></figure>
+    <div class="frow-copy"><span class="micro">03</span><h3>बेहतर विकल्प खोजें</h3><p>जो चीज़ सही नहीं, उसकी जगह GoodFor तुरंत कोई साफ और सेहतमंद विकल्प सुझाता है।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
   </div>
   <div class="frow frow--rev" data-mf-reveal>
-    <figure class="frow-media"><img src="media/in-site-4.webp" alt="बेहतर विकल्प खोजें" width="683" height="1024" loading="lazy" decoding="async"></figure>
-    <div class="frow-copy"><span class="micro">04</span><h3>बेहतर विकल्प खोजें</h3><p>जब कोई प्रोडक्ट सही न हो, GoodFor आपको तुरंत स्वस्थ और साफ विकल्प सुझाता है।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
+    <figure class="frow-media"><img src="media/in-site-4.webp" alt="स्मार्ट शॉपिंग बास्केट" width="683" height="1024" loading="lazy" decoding="async"></figure>
+    <div class="frow-copy"><span class="micro">04</span><h3>स्मार्ट शॉपिंग बास्केट</h3><p>अपनी पूरी खरीदारी का हेल्थ स्कोर ट्रैक करें और हर हफ्ते की सेहतमंद खरीदारी बेहतर बनाएं।</p><a class="link-cta" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener">App download karein <span aria-hidden="true">&rarr;</span></a></div>
   </div>
 </section>
 
@@ -307,10 +319,10 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
   </div></section>
 <section class="faq wrap" id="faq"><h2 data-mf-reveal data-mf-split="words">Questions, answered</h2>
   <div class="faq-in">
-  <details class="faq-item" data-mf-reveal><summary>क्या GoodFor भारत में मिलने वाले प्रोडक्ट्स को पहचानता है?<span class="faq-x" aria-hidden="true">+</span></summary><p>हाँ, GoodFor भारत में बिकने वाले पैकेटबंद खाने और स्किनकेयर प्रोडक्ट्स के बारकोड स्कैन करने में सक्षम है। ऐप लगातार नए प्रोडक्ट्स जोड़ता रहता है ताकि आपकी जानकारी हमेशा ताज़ा रहे।</p></details><details class="faq-item" data-mf-reveal><summary>क्या यह ऐप हिन्दी में काम करता है?<span class="faq-x" aria-hidden="true">+</span></summary><p>GoodFor का इंटरफेस सरल और आसान है जिसे कोई भी समझ सकता है। ऐप को और भी स्थानीय बनाने का काम जारी है — अभी भी इसकी जानकारी स्पष्ट और उपयोगी है।</p></details><details class="faq-item" data-mf-reveal><summary>क्या मुझे हर प्रोडक्ट के लिए इंटरनेट चाहिए?<span class="faq-x" aria-hidden="true">+</span></summary><p>स्कैन और विस्तृत जानकारी के लिए इंटरनेट कनेक्शन जरूरी है। एक बार देखी गई जानकारी ऐप में सेव हो जाती है जिसे आप बाद में भी देख सकते हैं।</p></details><details class="faq-item" data-mf-reveal><summary>क्या यह ऐप बच्चों और बुजुर्गों के लिए भी उपयोगी है?<span class="faq-x" aria-hidden="true">+</span></summary><p>बिल्कुल। आप अपने परिवार के हर सदस्य की एलर्जी, परहेज और स्वास्थ्य जरूरतें ऐप में सेट कर सकते हैं। GoodFor फिर हर प्रोडक्ट को उसी हिसाब से जाँचकर आपको सूचित करता है।</p></details>
+  <details class="faq-item" data-mf-reveal><summary>क्या GoodFor हिंदी में काम करता है?<span class="faq-x" aria-hidden="true">+</span></summary><p>GoodFor app को इस तरह बनाया गया है कि इसे कोई भी आसानी से समझ सके। भाषा की परेशानी नहीं — बस स्कैन करें और जानकारी पाएं।</p></details><details class="faq-item" data-mf-reveal><summary>क्या यह app भारत में मिलने वाले products को पहचानता है?<span class="faq-x" aria-hidden="true">+</span></summary><p>हाँ, GoodFor भारत में बिकने वाले packaged food और skincare products के barcodes को support करता है। बिस्कुट, नमकीन, दूध, क्रीम — सब स्कैन होते हैं।</p></details><details class="faq-item" data-mf-reveal><summary>क्या app download करना free है?<span class="faq-x" aria-hidden="true">+</span></summary><p>GoodFor app बिल्कुल free में download किया जा सकता है। अपने phone पर install करें और तुरंत स्कैन करना शुरू करें।</p></details><details class="faq-item" data-mf-reveal><summary>मुझे फूड लेबल पढ़ना नहीं आता — क्या यह app मेरे काम का है?<span class="faq-x" aria-hidden="true">+</span></summary><p>बिल्कुल — यही GoodFor की खासियत है। आपको ingredients खुद पढ़ने की ज़रूरत नहीं, app सब समझाकर आसान भाषा में बता देता है। पहली बार फूड लेबल समझ रहे हैं तो GoodFor आपके लिए ही बना है।</p></details>
   </div>
 </section>
-<section class="cta wrap" id="cta"><h2 data-mf-reveal data-mf-split="words">अब अनजान नहीं रहेगा थाली का सच</h2><p data-mf-reveal>GoodFor डाउनलोड करें और आज से ही सेहतमंद खरीदारी की शुरुआत करें।</p><a class="btn" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener" data-mf-reveal data-mf-magnet="120">App download karein</a></section><footer class="wrap"><p class="micro">GoodFor &copy; 2026</p></footer>
+<section class="cta wrap" id="cta"><h2 data-mf-reveal data-mf-split="words">अब अनजान ingredients को अलविदा कहें</h2><p data-mf-reveal>GoodFor app डाउनलोड करें और आज से ही सेहतमंद खरीदारी की शुरुआत करें — आपके परिवार की थाली आपके हाथ में है।</p><a class="btn" href="https://wa.me/919876543210?text=Hi!%20I%20saw%20the%20GoodFor%20page%20and%20want%20to%20know%20more." target="_blank" rel="noopener" rel="noopener" data-mf-reveal data-mf-magnet="120">App download karein</a></section><footer class="wrap"><p class="micro">GoodFor &copy; 2026</p></footer>
 <script>
 (function(){
 'use strict';
@@ -771,22 +783,25 @@ function parallax(){
   })();
 }
 
-/* fixed nav gains its frosted-bar state once the page scrolls — works under reduced motion too
- * (it is a legibility affordance, not an animation) */
-function navBar(){
-  var nav = d.querySelector('.mf-nav');
-  if (!nav) return;
-  var on = false;
-  function check(){
-    var s = (w.scrollY || d.documentElement.scrollTop) > 24;
-    if (s !== on){ on = s; nav.classList.toggle('is-scrolled', on); }
+/* reading-progress hairline: the one persistent piece of chrome — the nav itself stays at the
+ * top of the page and scrolls away (explicit user decision) */
+function progressBar(){
+  var bar = d.createElement('div');
+  bar.className = 'mf-progress'; bar.setAttribute('aria-hidden','true');
+  d.body.appendChild(bar);
+  var ticking = false;
+  function paint(){
+    ticking = false;
+    var max = d.documentElement.scrollHeight - w.innerHeight;
+    var p = max > 0 ? (w.scrollY || d.documentElement.scrollTop) / max : 0;
+    bar.style.transform = 'scaleX(' + (p < 0 ? 0 : p > 1 ? 1 : p).toFixed(4) + ')';
   }
-  w.addEventListener('scroll', check, { passive:true });
-  check();
+  w.addEventListener('scroll', function(){ if (!ticking){ ticking = true; requestAnimationFrame(paint); } }, { passive:true });
+  paint();
 }
 
 ready(function(){
-  split(); ladder(); reveals(); counters(); navBar();
+  split(); ladder(); reveals(); counters(); progressBar();
   if (STATIC) return;
   initVideos(); spotlight(); marquees(); magnets(); scrollText(); hscroll(); parallax();
   RM.addEventListener && RM.addEventListener('change', function(){ ladder(); });
@@ -953,7 +968,7 @@ img,svg,video,iframe{max-width:100%;height:auto}
   })
 })();
 </script>
-<script>(function(){var EP="https://wp-connect-goodfor-a7f4720c.koyeb.app/api/landing/lead",JOB="lf_mskehqww_dc9bb3ed";
+<script>(function(){var EP="https://wp-connect-goodfor-a7f4720c.koyeb.app/api/landing/lead",JOB="lf_mskgn7y9_ce376049";
 function wire(f){
   if(!f||f.__lfWired)return;f.__lfWired=1;
   f.addEventListener('submit',function(e){
