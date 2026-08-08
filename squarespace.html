@@ -4,20 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Make Your Business Real This Week — Squarespace</title>
-<meta name="description" content="Launch a professional small business website in days — no coding required, everything in one platform.">
-<meta name="theme-color" content="#1a0a00">
+<meta name="description" content="Launch a professional small business website or online store in days — no coding, no compromise.">
+<meta name="theme-color" content="#1a0a05">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&amp;family=Manrope:wght@300;400;500;700&amp;display=swap">
-<link rel="preload" as="image" href="media/sq-site-0.webp" fetchpriority="high">
+<link rel="preload" as="image" href="media/sq-site-0.png" fetchpriority="high">
 
 <style>:root{
-  --bg:#1a0a00; --ink:#ffffff; --dim:#9f9894; --line:#ffffff17;
+  --bg:#1a0a05; --ink:#ffffff; --dim:#9f9896; --line:#ffffff17;
   --at:#087bb5; --on-at:#ffffff;
   --fd:'Fraunces',Georgia,serif; --fb:'Manrope',system-ui,-apple-system,sans-serif;
   --pad:clamp(20px,4.5vw,72px);
-  --h1:clamp(2.6rem,7.2vw,7rem);
-  --h2:clamp(1.9rem,4.4vw,3.6rem);
+  --h1:clamp(3rem,9vw,8.6rem);
+  --h2:clamp(2rem,4.8vw,4rem);
   --body:clamp(.95rem,.4vw+.82rem,1.12rem);
   --micro:clamp(.62rem,.22vw+.55rem,.74rem);
   --ease:cubic-bezier(.22,1,.36,1);
@@ -35,10 +35,24 @@ a{color:inherit}
 :focus-visible{outline:2px solid var(--at);outline-offset:3px;border-radius:3px}
 .wrap{width:100%;max-width:1440px;margin-inline:auto;padding-inline:var(--pad)}
 h1,h2,h3{font-family:var(--fd);font-weight:400;margin:0;text-wrap:balance}
-h1{font-size:var(--h1);line-height:.94;letter-spacing:-.035em}
-h2{font-size:var(--h2);line-height:1.02;letter-spacing:-.025em}
+h1{font-size:var(--h1);line-height:.92;letter-spacing:-.045em}
+h2{font-size:var(--h2);line-height:1;letter-spacing:-.03em}
 p{margin:0;text-wrap:pretty}
 .micro{font-size:var(--micro);text-transform:uppercase;letter-spacing:.2em;font-weight:500;color:var(--dim)}
+
+/* ---- awwwards-grade finishing layer ----
+   grain: the fine film texture 7 of 30 corpus prompts carry (Prisma, 3D Portfolio, Aura). Scoped
+   to its section — NEVER position:fixed page-wide, which forces whole-page compositing.
+   sheet: the rounded-top section sheet that slides over the hero (3D Portfolio's white Services
+   sheet, Aura's pricing cards) — gives the scroll a physical, layered feel. */
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+.sheet{position:relative;z-index:2;border-radius:clamp(24px,3vw,44px) clamp(24px,3vw,44px) 0 0;
+  margin-top:calc(-1 * clamp(24px,3vw,44px));
+  background:color-mix(in srgb,var(--ink) 4%,var(--bg));
+  box-shadow:0 -18px 50px -30px rgba(0,0,0,.35)}
+.bed{will-change:transform}
+.bed video,.bed canvas,.bed img{transform:scale(1.1)}   /* parallax headroom: edges never show */
 
 /* ---- liquid glass. Byte-for-byte the treatment that recurs in 7 of 30 corpus prompts,
        including the mask-composite gradient border. Written once, here. ---- */
@@ -106,11 +120,16 @@ p{margin:0;text-wrap:pretty}
 .pausebtn{position:absolute;right:16px;bottom:16px;z-index:6;border-radius:999px;
   padding:.5em 1.1em;font-size:var(--micro);font-weight:600;letter-spacing:.12em;text-transform:uppercase;
   background:rgba(0,0,0,.42);color:#fff;backdrop-filter:blur(8px);pointer-events:auto}
-.btn{display:inline-flex;align-items:center;gap:.6em;border-radius:999px;padding:.85em 1.6em;
-  font-weight:500;font-size:.92rem;background:var(--at);color:var(--on-at);
-  transition:transform .3s var(--ease),filter .3s var(--ease)}
-.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
-.btn--ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn{display:inline-flex;align-items:center;gap:.6em;border-radius:999px;padding:1em 1.9em;
+  font-weight:600;font-size:.95rem;letter-spacing:.01em;background:var(--at);color:var(--on-at);
+  text-decoration:none;box-shadow:0 10px 30px -12px color-mix(in srgb,var(--at) 55%,transparent);
+  transition:transform .3s var(--ease),filter .3s var(--ease),box-shadow .3s var(--ease)}
+.btn::after{content:"\2192";display:inline-block;transition:transform .3s var(--ease)}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.06);
+  box-shadow:0 16px 40px -14px color-mix(in srgb,var(--at) 70%,transparent)}
+.btn:hover::after{transform:translate(3px,-2px)}
+.btn--ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn--ghost:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
 
 /* ---- reduced motion: every primitive collapses, the page still reads ---- */
 @media (prefers-reduced-motion:reduce){
@@ -242,42 +261,42 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
   <a class="btn" href="#lead-form" data-mf-in="chrome" data-mf-magnet="90">Start your free trial</a>
 </header>
   <div class="msc-head wrap">
-    <p class="micro" data-mf-in="eyebrow">Toronto's Website Builder</p>
+    <p class="micro" data-mf-in="eyebrow">Toronto's favourite website builder</p>
     <h1 data-mf-in="headline" data-mf-split="words">Make Your Business Real This Week</h1>
-    <p class="hero-sub" data-mf-in="sub">Launch a professional small business website in days — no coding required, everything in one platform.</p>
+    <p class="hero-sub" data-mf-in="sub">Launch a professional small business website or online store in days — no coding, no compromise.</p>
     <div class="hero-cta" data-mf-in="cta"><a class="btn" href="#lead-form" data-mf-magnet="110">Start your free trial</a></div>
   </div>
-  <div class="msc-mosaic" aria-hidden="true" data-mf-in="ornament"><div class="msc-row"><div data-mf-marquee="32"><img src="media/sq-site-1.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-2.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-3.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-4.jpg" alt="" loading="lazy" decoding="async"><img src="https://images.pexels.com/photos/8279815/pexels-photo-8279815.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" loading="lazy" decoding="async"><img src="media/sq-site-1.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-2.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-3.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-4.jpg" alt="" loading="lazy" decoding="async"><img src="https://images.pexels.com/photos/8279815/pexels-photo-8279815.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" loading="lazy" decoding="async"></div></div><div class="msc-row msc-row--rev"><div data-mf-marquee="26"><img src="https://images.pexels.com/photos/461073/pexels-photo-461073.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" loading="lazy" decoding="async"><img src="https://images.pexels.com/photos/34920515/pexels-photo-34920515.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" loading="lazy" decoding="async"><img src="media/sq-site-1.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-2.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-3.jpg" alt="" loading="lazy" decoding="async"><img src="https://images.pexels.com/photos/461073/pexels-photo-461073.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" loading="lazy" decoding="async"><img src="https://images.pexels.com/photos/34920515/pexels-photo-34920515.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" loading="lazy" decoding="async"><img src="media/sq-site-1.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-2.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-3.jpg" alt="" loading="lazy" decoding="async"></div></div></div>
+  <div class="msc-mosaic" aria-hidden="true" data-mf-in="ornament"><div class="msc-row"><div data-mf-marquee="32"><img src="media/sq-site-1.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-2.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-3.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-4.jpg" alt="" loading="lazy" decoding="async"><img src="https://images.pexels.com/photos/6684766/pexels-photo-6684766.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" loading="lazy" decoding="async"><img src="media/sq-site-1.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-2.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-3.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-4.jpg" alt="" loading="lazy" decoding="async"><img src="https://images.pexels.com/photos/6684766/pexels-photo-6684766.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" loading="lazy" decoding="async"></div></div><div class="msc-row msc-row--rev"><div data-mf-marquee="26"><img src="https://images.pexels.com/photos/326514/pexels-photo-326514.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" loading="lazy" decoding="async"><img src="https://images.pexels.com/photos/36730469/pexels-photo-36730469.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" loading="lazy" decoding="async"><img src="media/sq-site-1.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-2.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-3.jpg" alt="" loading="lazy" decoding="async"><img src="https://images.pexels.com/photos/326514/pexels-photo-326514.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" loading="lazy" decoding="async"><img src="https://images.pexels.com/photos/36730469/pexels-photo-36730469.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=650&amp;w=940" alt="" loading="lazy" decoding="async"><img src="media/sq-site-1.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-2.jpg" alt="" loading="lazy" decoding="async"><img src="media/sq-site-3.jpg" alt="" loading="lazy" decoding="async"></div></div></div>
 </section>
-<section class="statsband"><div class="wrap"><dl class="stats" data-mf-reveal><div><dt data-mf-count="14M+">0</dt><dd class="micro">entrepreneurs served</dd></div><div><dt data-mf-count="200+">0</dt><dd class="micro">countries and territories</dd></div></dl></div></section>
-<section class="fgrid wrap" id="work"><h2 data-mf-reveal data-mf-split="words">Built For You</h2>
+<section class="sheet statsband"><div class="wrap"><dl class="stats" data-mf-reveal><div><dt data-mf-count="14M+">0</dt><dd class="micro">entrepreneurs served</dd></div><div><dt data-mf-count="200+">0</dt><dd class="micro">countries and territories</dd></div></dl></div></section>
+<section class="fgrid wrap" id="work"><h2 data-mf-reveal data-mf-split="words">Everything You Need</h2>
   <div class="fgrid-in" data-mf-stagger>
   
   <article class="fgrid-card glass" data-mf-reveal><img src="media/sq-site-1.jpg" alt="" width="500" height="668" loading="lazy" decoding="async">
-    <div class="fgrid-body"><span class="micro">01</span><h3>AI Website Builder Tools</h3><p>Answer a few questions and Squarespace's AI builds a tailored starting point for your small business website instantly.</p></div>
+    <div class="fgrid-body"><span class="micro">01</span><h3>AI-Powered Website Builder</h3><p>Answer a few questions and Squarespace's AI assembles a tailored site structure ready for your content.</p></div>
   </article>
   <article class="fgrid-card glass" data-mf-reveal><img src="media/sq-site-2.jpg" alt="" width="500" height="668" loading="lazy" decoding="async">
-    <div class="fgrid-body"><span class="micro">02</span><h3>Online Store Built In</h3><p>Turn your site into a fully functional online store builder — sell products, take payments, and manage orders from one dashboard.</p></div>
+    <div class="fgrid-body"><span class="micro">02</span><h3>Built-In Online Store Builder</h3><p>Sell products, services, or digital downloads from the same platform that hosts your site — no third-party plugins required.</p></div>
   </article>
   <article class="fgrid-card glass" data-mf-reveal><img src="media/sq-site-3.jpg" alt="" width="500" height="668" loading="lazy" decoding="async">
-    <div class="fgrid-body"><span class="micro">03</span><h3>Send Invoices and Contracts</h3><p>Create intake forms, send proposals and contracts, and get paid directly through your site without juggling separate tools.</p></div>
+    <div class="fgrid-body"><span class="micro">03</span><h3>Send Invoices and Get Paid</h3><p>Create proposals, send contracts, and collect payment all within one dashboard so nothing falls through the cracks.</p></div>
   </article>
   <article class="fgrid-card glass" data-mf-reveal><img src="media/sq-site-4.jpg" alt="" width="500" height="667" loading="lazy" decoding="async">
-    <div class="fgrid-body"><span class="micro">04</span><h3>Find Your Perfect Domain</h3><p>Claim a domain name that matches your brand and make your small business website instantly findable and credible.</p></div>
+    <div class="fgrid-body"><span class="micro">04</span><h3>Find Your Perfect Domain</h3><p>Search, claim, and connect a domain name that matches your brand without ever leaving Squarespace.</p></div>
   </article>
   </div>
 </section>
 <section class="stepsband wrap"><h2 data-mf-reveal data-mf-split="words">How it works</h2>
   <ol class="steps-in">
-  <li data-mf-reveal><span class="step-n">1</span><div><h3>AI Website Builder Tools</h3><p>Answer a few questions and Squarespace's AI builds a tailored starting point for your small business website instantly.</p></div></li><li data-mf-reveal><span class="step-n">2</span><div><h3>Online Store Built In</h3><p>Turn your site into a fully functional online store builder — sell products, take payments, and manage orders from one dashboard.</p></div></li><li data-mf-reveal><span class="step-n">3</span><div><h3>Send Invoices and Contracts</h3><p>Create intake forms, send proposals and contracts, and get paid directly through your site without juggling separate tools.</p></div></li><li data-mf-reveal><span class="step-n">4</span><div><h3>Find Your Perfect Domain</h3><p>Claim a domain name that matches your brand and make your small business website instantly findable and credible.</p></div></li>
+  <li data-mf-reveal><span class="step-n">1</span><div><h3>AI-Powered Website Builder</h3><p>Answer a few questions and Squarespace's AI assembles a tailored site structure ready for your content.</p></div></li><li data-mf-reveal><span class="step-n">2</span><div><h3>Built-In Online Store Builder</h3><p>Sell products, services, or digital downloads from the same platform that hosts your site — no third-party plugins required.</p></div></li><li data-mf-reveal><span class="step-n">3</span><div><h3>Send Invoices and Get Paid</h3><p>Create proposals, send contracts, and collect payment all within one dashboard so nothing falls through the cracks.</p></div></li><li data-mf-reveal><span class="step-n">4</span><div><h3>Find Your Perfect Domain</h3><p>Search, claim, and connect a domain name that matches your brand without ever leaving Squarespace.</p></div></li>
   </ol>
 </section>
 <section class="faq wrap" id="faq"><h2 data-mf-reveal data-mf-split="words">Questions, answered</h2>
   <div class="faq-in">
-  <details class="faq-item" data-mf-reveal><summary>How long does it actually take to get a site live?<span class="faq-x" aria-hidden="true">+</span></summary><p>Most small business owners publish their first Squarespace site within a day or two of starting. The AI website builder tools and ready-made templates eliminate the blank-page problem entirely. You can start a free trial today and be live before the week is out.</p></details><details class="faq-item" data-mf-reveal><summary>Do I need any coding or design experience?<span class="faq-x" aria-hidden="true">+</span></summary><p>None at all. Squarespace is built specifically so that business owners — not developers — can create, edit, and manage their own website. Every template is fully customizable through a visual editor with no code required.</p></details><details class="faq-item" data-mf-reveal><summary>Can I sell products or take payments through my site?<span class="faq-x" aria-hidden="true">+</span></summary><p>Yes — Squarespace includes a built-in online store builder so you can sell physical products, digital downloads, or services. You can also send invoices and get paid directly through the platform without any third-party tools.</p></details><details class="faq-item" data-mf-reveal><summary>What happens after the free trial ends?<span class="faq-x" aria-hidden="true">+</span></summary><p>After your free trial you choose a paid plan that fits your budget and the features your business needs. You keep everything you built during the trial, so no work is lost. There is no pressure to upgrade until you are ready.</p></details>
+  <details class="faq-item" data-mf-reveal><summary>Do I need any coding or design skills to build my website?<span class="faq-x" aria-hidden="true">+</span></summary><p>None at all. Squarespace is built so that small business owners can create and manage a professional site entirely on their own. The AI builder and drag-and-drop editor handle the technical side while you focus on your content.</p></details><details class="faq-item" data-mf-reveal><summary>Can I sell products or take bookings directly through my Squarespace site?<span class="faq-x" aria-hidden="true">+</span></summary><p>Yes — the online store builder is fully integrated into every Squarespace site. You can sell physical products, digital downloads, or services, and accept payment without needing a separate e-commerce platform.</p></details><details class="faq-item" data-mf-reveal><summary>What happens after my free trial ends — will I lose my work?<span class="faq-x" aria-hidden="true">+</span></summary><p>Your site and all your content are saved when your trial ends. You simply choose a plan to publish it publicly. Squarespace offers several tiers so you can start with what fits your budget right now.</p></details><details class="faq-item" data-mf-reveal><summary>Is Squarespace a good choice for a Toronto-based small business that wants to grow?<span class="faq-x" aria-hidden="true">+</span></summary><p>Absolutely. Squarespace gives you a custom domain, built-in SEO tools, email marketing, and client management features on one platform — everything a growing local business needs without juggling multiple subscriptions.</p></details>
   </div>
 </section>
-<section class="cta wrap" id="cta"><h2 data-mf-reveal data-mf-split="words">Your Business Deserves To Be Real</h2><p data-mf-reveal>Join over 14 million entrepreneurs worldwide — start your free Squarespace trial today and go live this week.</p><a class="btn" href="#lead-form" data-mf-reveal data-mf-magnet="120">Start your free trial</a></section><footer class="wrap"><p class="micro">Squarespace &copy; 2026</p></footer>
+<section class="cta wrap" id="cta"><h2 data-mf-reveal data-mf-split="words">Your Site Can Be Live Today</h2><p data-mf-reveal>Start a free Squarespace trial — no credit card required, cancel anytime, and your small business website is yours to keep refining.</p><a class="btn" href="#lead-form" data-mf-reveal data-mf-magnet="120">Start your free trial</a></section><footer class="wrap"><p class="micro">Squarespace &copy; 2026</p></footer>
 <script>
 (function(){
 'use strict';
@@ -716,10 +735,32 @@ function hscroll(){
   })();
 }
 
+/* ---------------------------------------------------------------------------
+ * 11. PARALLAX — subtle depth on media beds and figures. data-mf-parallax="0.1".
+ * Transform-only, one rAF, off under reduced motion. Media inside beds carries
+ * scale(1.1) headroom in CSS so translated edges never expose the background.
+ * ------------------------------------------------------------------------- */
+function parallax(){
+  if (reduced()) return;
+  var els = d.querySelectorAll('[data-mf-parallax]');
+  if (!els.length) return;
+  (function tick(){
+    requestAnimationFrame(tick);
+    var vh = w.innerHeight;
+    for (var i=0;i<els.length;i++){
+      var el = els[i], r = el.getBoundingClientRect();
+      if (r.bottom < -80 || r.top > vh + 80) continue;
+      var f = +(el.getAttribute('data-mf-parallax')) || 0.1;
+      var off = (r.top + r.height/2 - vh/2) * -f;
+      el.style.transform = 'translate3d(0,' + off.toFixed(1) + 'px,0)';
+    }
+  })();
+}
+
 ready(function(){
   split(); ladder(); reveals(); counters();
   if (STATIC) return;
-  initVideos(); spotlight(); marquees(); magnets(); scrollText(); hscroll();
+  initVideos(); spotlight(); marquees(); magnets(); scrollText(); hscroll(); parallax();
   RM.addEventListener && RM.addEventListener('change', function(){ ladder(); });
 });
 })();
@@ -884,7 +925,7 @@ img,svg,video,iframe{max-width:100%;height:auto}
   })
 })();
 </script>
-<script>(function(){var EP="https://wp-connect-goodfor-a7f4720c.koyeb.app/api/landing/lead",JOB="lf_mska12gr_53decb73";
+<script>(function(){var EP="https://wp-connect-goodfor-a7f4720c.koyeb.app/api/landing/lead",JOB="lf_mskbmj7q_1941a72d";
 function wire(f){
   if(!f||f.__lfWired)return;f.__lfWired=1;
   f.addEventListener('submit',function(e){
