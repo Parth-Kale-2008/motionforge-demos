@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AutoMax</title>
-<meta name="description" content="Every vehicle inspected on 200 points before it reaches the floor.">
+<meta name="description" content="Watch it come together — every part certified before it reaches you.">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -300,7 +300,18 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
 .crv-copy{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center;
   opacity:var(--rv,0);transform:translateY(calc(44px - 44px * var(--rv,0)))}
 .crv-copy h2{font-size:clamp(2rem,5.4vw,4.4rem);text-shadow:0 8px 44px color-mix(in srgb,var(--bg) 80%,transparent)}
-@media (prefers-reduced-motion:reduce){.crv{height:auto}.crv-pin{position:static;height:72vh}.crv-media{transform:none;clip-path:none}.crv-copy{opacity:1;transform:none}}</style>
+@media (prefers-reduced-motion:reduce){.crv{height:auto}.crv-pin{position:static;height:72vh}.crv-media{transform:none;clip-path:none}.crv-copy{opacity:1;transform:none}}
+.lf-band{position:relative;z-index:2;padding-block:clamp(64px,10vh,140px)}
+.lf-band-in{max-width:620px;margin-inline:auto;padding:clamp(28px,4vw,48px);border-radius:24px;display:flex;flex-direction:column;gap:8px}
+.lf-band h2{font-size:clamp(1.6rem,3.4vw,2.6rem)}
+.lf-band-hint{color:var(--dim);font-size:.9rem;margin-bottom:10px}
+.lf-band form{display:flex;flex-direction:column;gap:14px}
+.lf-band label{display:flex;flex-direction:column;gap:6px;font-size:.85rem;font-weight:600;color:var(--dim)}
+.lf-band input{padding:13px 15px;border-radius:12px;border:1px solid var(--line);background:color-mix(in srgb,var(--bg) 72%,transparent);color:var(--ink);font-size:1rem;font-family:inherit}
+.lf-band input:focus{outline:2px solid var(--at);outline-offset:1px}
+.lf-band .btn{margin-top:6px;justify-content:center}
+.lf-band .lf-ok{color:var(--at);font-weight:700;text-align:center}
+.lf-band .lf-err{color:#e5484d;font-weight:600;text-align:center}</style>
 </head>
 <body>
 <header class="mf-nav wrap" data-mf-in="chrome">
@@ -309,11 +320,11 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
   <a class="btn" href="#cta" data-mf-in="chrome" data-mf-magnet="90">Book a test drive</a>
 </header>
 <script type="application/json" data-cine-spec="cinev">{"runway":3200,"smooth":0.14,"pointerSmooth":0.12,"beats":{"intro":[96,640],"k0":[768,1056,1408,1632],"k1":[1824,2112,2464,2688],"tail":[2688,3104]},"vars":[{"name":"--title-y","expr":["*","intro.enter",-190],"unit":"px","fixed":1},{"name":"--title-o","expr":["inv","intro.enter"],"fixed":3},{"name":"--p1-o","expr":["*","k0.active",["inv","k0.exit"]],"fixed":3},{"name":"--p1-y","expr":["+",["*","k0.exit",-70],["*",["inv","k0.enter"],52]],"unit":"px","fixed":1},{"name":"--p2-o","expr":["*","k1.active",["inv","k1.exit"]],"fixed":3},{"name":"--p2-y","expr":["+",["*","k1.exit",-70],["*",["inv","k1.enter"],52]],"unit":"px","fixed":1},{"name":"--tail-o","expr":["pow","tail.enter",1.4],"fixed":3},{"name":"--tail-y","expr":["*",["inv",["pow","tail.enter",1.4]],120],"unit":"px","fixed":1}]}</script>
-<section class="cine cinev" data-cine="cinev" data-mf-scrub-scope style="--mf-runway:3200px" aria-label="Your Drive Starts Here scroll story">
+<section class="cine cinev" data-cine="cinev" data-mf-scrub-scope style="--mf-runway:3200px" aria-label="Built For Your Drive scroll story">
   <div class="cine-stage">
     <div class="bed"><video muted playsinline preload="auto" data-mf-play="scrub" data-mf-lerp="0.12" aria-hidden="true"><source src="https://assets.mixkit.co/videos/52427/52427-720.mp4" type="video/mp4"></video></div>
-    <h1 class="cine-title cinev-title">Your Drive Starts Here</h1>
-    <div class="cine-intro"><p>Every vehicle inspected on 200 points before it reaches the floor.</p></div>
+    <h1 class="cine-title cinev-title">Built For Your Drive</h1>
+    <div class="cine-intro"><p>Watch it come together — every part certified before it reaches you.</p></div>
     
     <div class="cine-panel cine-panel-1 glass cinev-panel"><h2>Pick it</h2><p>Real photos, real history, no surprises.</p></div>
     <div class="cine-panel cine-panel-2 glass cinev-panel"><h2>Inspect it</h2><p>200-point certification, documented.</p></div>
@@ -326,9 +337,23 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
     <div class="crv-shade" aria-hidden="true"></div>
     <div class="crv-copy">
       <p class="micro">the reveal</p>
-      <h2>Meet your next car</h2>
+      <h2>Fully assembled. Ready for you.</h2>
       <a class="btn" href="#cta" data-mf-magnet="110">Book a test drive</a>
     </div>
+  </div>
+</section>
+<section class="lf-band" id="lead-form">
+  <div class="wrap lf-band-in glass" data-mf-reveal>
+    <h2>Book your test drive</h2>
+    <p class="lf-band-hint">Takes under a minute — no obligation.</p>
+    <form class="lf-form" action="/api/landing/lead" method="post">
+      <label>Full name<input required name="name" autocomplete="name" placeholder="Full name"></label>
+      <label>Phone number<input required name="phone" type="tel" autocomplete="tel" placeholder="Phone number"></label>
+      <label>Email address<input required name="email" type="email" autocomplete="email" placeholder="Email address"></label>
+      <button class="btn" type="submit">Book a test drive</button>
+      <div class="lf-ok" role="status" aria-live="polite" style="display:none">Thanks! We'll be in touch shortly.</div>
+      <div class="lf-err" role="alert" style="display:none"></div>
+    </form>
   </div>
 </section>
 <section class="sheet hlband"><div class="wrap"><div class="hlband-in">
