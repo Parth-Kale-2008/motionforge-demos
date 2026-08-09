@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton:wght@400&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap">
 
-<script src="https://unpkg.com/three@0.147.0/build/three.min.js"></script>
+
 <style>:root{
   --bg:#0a0a0a; --ink:#ffffff; --dim:#a1a1a1; --line:#ffffff17;
   --at:#d7e2ea; --on-at:#0c0c0c;
@@ -273,74 +273,60 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
 .step-n{flex:0 0 auto;width:2.4em;height:2.4em;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:var(--at);color:var(--on-at);font-weight:700;font-family:var(--fd)}
 .steps-in h3{font-size:clamp(1.15rem,2vw,1.5rem);margin-bottom:.25em}
 .steps-in p{color:var(--dim);max-width:56ch}
-.im3-stage{min-height:100svh;position:relative;z-index:2;background:transparent}
-.im3-head{margin-block:auto;max-width:820px;display:flex;flex-direction:column;gap:clamp(14px,2.4vh,26px)}
-.im3-head h1{font-size:clamp(3rem,10vw,9rem);text-shadow:0 10px 60px color-mix(in srgb,var(--bg) 70%,transparent)}
-/* each world places its words differently — part of what keeps two 3-D pages apart */
-.im3--center .im3-head{align-items:center;text-align:center;margin-inline:auto}
-.im3--left .im3-head{align-items:flex-start;text-align:left;margin-right:auto}
-.im3--right .im3-head{align-items:flex-end;text-align:right;margin-left:auto}
-.im3--playground .im3-head h1{font-size:clamp(2.8rem,8.4vw,7.4rem)}
-.im3--liquid .im3-head h1{letter-spacing:-.02em}
-.im3-scrollcue{position:absolute;right:var(--pad);bottom:28px;display:flex;align-items:center;gap:10px;letter-spacing:.3em}
-.im3-line{display:inline-block;width:70px;height:1px;background:var(--ink);transform-origin:left;animation:im3cue 2.2s var(--ease) infinite}
-@keyframes im3cue{0%{transform:scaleX(0)}55%{transform:scaleX(1)}100%{transform:scaleX(0);transform-origin:right}}
-@media (prefers-reduced-motion:reduce){ .im3-line{animation:none} }
-/* everything after the hero floats OVER the 3D world — glass, not solid sheets */
-body{background:transparent}
-.sheet{background:color-mix(in srgb,var(--bg) 72%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.fgrid-card{background:color-mix(in srgb,var(--bg) 62%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.hlband{background:color-mix(in srgb,var(--ink) 6%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.frow-media,.hs-card,.stack-card{background:color-mix(in srgb,var(--bg) 62%,transparent)}
-.faq,.cta,.manifesto{position:relative;z-index:2}
-
-.mf3d{position:fixed;inset:0;z-index:0;pointer-events:none}
-.mf3d canvas{width:100%;height:100%;display:block}
-/* every failure path (no WebGL, blocked CDN, reduced motion) lands on the brand gradient */
-.mf-3d-off .mf3d canvas{display:none}
-.mf3d::before{content:"";position:absolute;inset:0;opacity:0;
-  background:radial-gradient(120% 90% at 70% 20%, color-mix(in srgb,var(--at) 24%,var(--bg)) 0%, var(--bg) 55%, color-mix(in srgb,var(--ink) 8%,var(--bg)) 100%)}
-.mf-3d-off .mf3d::before{opacity:1}
-@media (prefers-reduced-motion:reduce){ .mf3d canvas{display:none} .mf3d::before{opacity:1} }</style>
+.cine{position:relative;height:calc(100vh + 3200px)}
+.cine-stage{position:sticky;top:0;height:100vh;min-height:620px;overflow:hidden;isolation:isolate}
+.cinev .bed{position:absolute;inset:0;z-index:0}
+.cinev .bed video,.cinev .bed canvas{width:100%;height:100%;object-fit:cover}
+.cine-stage > *{position:absolute}
+.cinev-title{left:50%;top:clamp(118px,18vh,205px);width:min(94vw,1600px);margin:0;z-index:3;font-family:var(--fd);font-size:clamp(3.4rem,10vw,9.5rem);line-height:.85;letter-spacing:-.03em;text-align:center;transform:translate3d(-50%,var(--title-y,0),0);opacity:var(--title-o,1)}
+.cine-intro{left:50%;bottom:clamp(56px,24vh,340px);width:min(560px,calc(100vw - 40px));z-index:9;text-align:center;transform:translate3d(-50%,0,0);opacity:var(--title-o,1)}
+.cine-intro p{margin:0;font-size:1.14rem;font-weight:500;line-height:1.25;text-shadow:0 2px 18px rgba(0,0,0,.42)}
+.cine-panel{left:50%;width:min(620px,calc(100vw - 42px));z-index:10;text-align:center;pointer-events:none}
+.cinev-panel{border-radius:26px;padding:clamp(24px,4vh,44px) clamp(20px,3vw,40px)}
+.cine-panel h2{margin:0;font-family:var(--fd);font-size:clamp(1.9rem,3.8vw,3.4rem);line-height:1}
+.cine-panel p{margin:18px auto 0;max-width:44ch;font-size:1.05rem;line-height:1.4}
+.cine-panel-1{top:58%;opacity:var(--p1-o,0);transform:translate3d(-50%,calc(-50% + var(--p1-y,52px)),0)}
+.cine-panel-2{top:38%;opacity:var(--p2-o,0);transform:translate3d(-50%,calc(-50% + var(--p2-y,52px)),0)}
+.cine-tail{left:50%;top:50%;z-index:11;width:min(680px,calc(100vw - 40px));text-align:center;opacity:var(--tail-o,0);transform:translate3d(-50%,calc(-50% + var(--tail-y,120px)),0)}
+.cine-tail h2{font-family:var(--fd);font-size:clamp(2.2rem,4.4vw,4rem);line-height:1;text-shadow:0 16px 38px rgba(0,0,0,.4)}
+.cine-tail .btn{margin-top:26px}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }</style>
 </head>
 <body>
-
-<div class="mf3d" data-mf-3d aria-hidden="true"><canvas></canvas><div class="grain"></div></div>
-<section class="stage im3-stage im3--assembly im3--left" id="top">
-  <header class="mf-nav wrap" data-mf-in="chrome">
+<header class="mf-nav wrap" data-mf-in="chrome">
   <a class="mf-logo" href="#top">AutoMax</a>
   <nav class="mf-links glass" aria-label="Primary"><a href="#work">Work</a><a href="#studio">Studio</a><a href="#approach">Approach</a><a href="#contact">Contact</a></nav>
   <a class="btn" href="#cta" data-mf-in="chrome" data-mf-magnet="90">Book a test drive</a>
 </header>
-  <div class="im3-head wrap">
-    <p class="micro" data-mf-in="eyebrow">scroll to assemble it</p>
-    <h1 data-mf-in="headline" data-mf-split="words">Your Next Car, Fully Assembled Trust</h1>
-    <p class="hero-sub" data-mf-in="sub">Every vehicle inspected on 200 points before it reaches the floor.</p>
-    <div class="hero-cta" data-mf-in="cta"><a class="btn" href="#cta" data-mf-magnet="110">Book a test drive</a></div>
+<script type="application/json" data-cine-spec="cinev">{"runway":3200,"smooth":0.14,"pointerSmooth":0.12,"beats":{"intro":[96,640],"k0":[768,1056,1408,1632],"k1":[1824,2112,2464,2688],"tail":[2688,3104]},"vars":[{"name":"--title-y","expr":["*","intro.enter",-190],"unit":"px","fixed":1},{"name":"--title-o","expr":["inv","intro.enter"],"fixed":3},{"name":"--p1-o","expr":["*","k0.active",["inv","k0.exit"]],"fixed":3},{"name":"--p1-y","expr":["+",["*","k0.exit",-70],["*",["inv","k0.enter"],52]],"unit":"px","fixed":1},{"name":"--p2-o","expr":["*","k1.active",["inv","k1.exit"]],"fixed":3},{"name":"--p2-y","expr":["+",["*","k1.exit",-70],["*",["inv","k1.enter"],52]],"unit":"px","fixed":1},{"name":"--tail-o","expr":["pow","tail.enter",1.4],"fixed":3},{"name":"--tail-y","expr":["*",["inv",["pow","tail.enter",1.4]],120],"unit":"px","fixed":1}]}</script>
+<section class="cine cinev" data-cine="cinev" data-mf-scrub-scope style="--mf-runway:3200px" aria-label="Your Drive Starts Here scroll story">
+  <div class="cine-stage">
+    <div class="bed"><video muted playsinline preload="auto" data-mf-play="scrub" data-mf-lerp="0.12" aria-hidden="true"><source src="https://assets.mixkit.co/videos/52427/52427-720.mp4" type="video/mp4"></video></div>
+    <h1 class="cine-title cinev-title">Your Drive Starts Here</h1>
+    <div class="cine-intro"><p>Every vehicle inspected on 200 points before it reaches the floor.</p></div>
+    
+    <div class="cine-panel cine-panel-1 glass cinev-panel"><h2>Pick it</h2><p>Real photos, real history, no surprises.</p></div>
+    <div class="cine-panel cine-panel-2 glass cinev-panel"><h2>Inspect it</h2><p>200-point certification, documented.</p></div>
+    <div class="cine-tail" data-cine-gate="tail.enter"><h2>Take the wheel.</h2><a class="btn" href="#lead-form">Book a test drive</a></div>
   </div>
-  <div class="im3-scrollcue micro" data-mf-in="ornament" aria-hidden="true">scroll<span class="im3-line"></span></div>
 </section>
-<section class="sheet stepsband wrap"><h2 data-mf-reveal data-mf-split="words">How it works</h2>
-  <ol class="steps-in">
-  <li data-mf-reveal><span class="step-n">1</span><div><h3>Pick it</h3><p>Real photos, real history, no surprises.</p></div></li><li data-mf-reveal><span class="step-n">2</span><div><h3>Inspect it</h3><p>200-point certification, documented.</p></div></li><li data-mf-reveal><span class="step-n">3</span><div><h3>Drive it</h3><p>Seven-day money-back promise.</p></div></li>
-  </ol>
-</section>
-<section class="frows wrap" id="work"><h2 data-mf-reveal data-mf-split="words">How buying works</h2>
+<section class="sheet hlband"><div class="wrap"><div class="hlband-in">
+  <div class="hl" data-mf-reveal><span class="micro">Certified</span><h3>200 checks</h3><p>Every single car.</p></div><div class="hl" data-mf-reveal><span class="micro">Fair</span><h3>One price</h3><p>No haggling theatre.</p></div><div class="hl" data-mf-reveal><span class="micro">Safe</span><h3>7-day return</h3><p>Money back, no forms.</p></div>
+  </div></div></section>
+<section class="fgrid wrap" id="work"><h2 data-mf-reveal data-mf-split="words">How buying works</h2>
+  <div class="fgrid-in" data-mf-stagger>
   
-  <div class="frow" data-mf-reveal>
-    <figure class="frow-media" data-mf-parallax="0.06"><span class="frow-ix micro">01</span></figure>
-    <div class="frow-copy"><span class="micro">01</span><h3>Pick it</h3><p>Real photos, real history, no surprises.</p><a class="link-cta" href="#cta">Book a test drive <span aria-hidden="true">&rarr;</span></a></div>
-  </div>
-  <div class="frow frow--rev" data-mf-reveal>
-    <figure class="frow-media" data-mf-parallax="0.06"><span class="frow-ix micro">02</span></figure>
-    <div class="frow-copy"><span class="micro">02</span><h3>Inspect it</h3><p>200-point certification, documented.</p><a class="link-cta" href="#cta">Book a test drive <span aria-hidden="true">&rarr;</span></a></div>
-  </div>
-  <div class="frow" data-mf-reveal>
-    <figure class="frow-media" data-mf-parallax="0.06"><span class="frow-ix micro">03</span></figure>
-    <div class="frow-copy"><span class="micro">03</span><h3>Drive it</h3><p>Seven-day money-back promise.</p><a class="link-cta" href="#cta">Book a test drive <span aria-hidden="true">&rarr;</span></a></div>
+  <article class="fgrid-card glass" data-mf-reveal data-mf-tilt="6">
+    <div class="fgrid-body"><span class="micro">01</span><h3>Pick it</h3><p>Real photos, real history, no surprises.</p></div>
+  </article>
+  <article class="fgrid-card glass" data-mf-reveal data-mf-tilt="6">
+    <div class="fgrid-body"><span class="micro">02</span><h3>Inspect it</h3><p>200-point certification, documented.</p></div>
+  </article>
+  <article class="fgrid-card glass" data-mf-reveal data-mf-tilt="6">
+    <div class="fgrid-body"><span class="micro">03</span><h3>Drive it</h3><p>Seven-day money-back promise.</p></div>
+  </article>
   </div>
 </section>
-
 <section class="faq wrap" id="faq"><h2 data-mf-reveal data-mf-split="words">Questions, answered</h2>
   <div class="faq-in">
   <details class="faq-item" data-mf-reveal><summary>Trade-ins?<span class="faq-x" aria-hidden="true">+</span></summary><p>Yes, valued on the spot.</p></details>
@@ -883,90 +869,85 @@ ready(function(){
 <script>
 (function(){
 'use strict';
-var host = document.querySelector('[data-mf-3d]');
-if (!host) return;
-var RM = window.matchMedia('(prefers-reduced-motion: reduce)');
-function fail(){ document.body.classList.add('mf-3d-off'); }
-if (RM.matches || !window.THREE) return fail();
-var canvas = host.querySelector('canvas');
-var renderer;
-try {
-  renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
-} catch (e) { return fail(); }
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
-var scene = new THREE.Scene();
+var d=document, w=window;
+d.querySelectorAll('[data-cine]').forEach(function(host){
+var id = host.getAttribute('data-cine');
+var tag = d.querySelector('script[data-cine-spec="'+id+'"]');
+if(!tag) return;
+var SPEC;
+try { SPEC = JSON.parse(tag.textContent); } catch(e){ return; }
+SPEC.smooth = SPEC.smooth || 0.14; SPEC.pointerSmooth = SPEC.pointerSmooth || 0.12;
+var RM = w.matchMedia('(prefers-reduced-motion: reduce)');
+function clamp01(v){ return v<0?0:v>1?1:v; }
+function smoothstep(a,b,v){ var x=clamp01((v-a)/(b-a)); return x*x*(3-2*x); }
+function lerp(a,b,t){ return a+(b-a)*t; }
+var S={}, tS=0, sS=0, tMx=0, tMy=0, mx=0, my=0, init=false, pending=false;
 
-scene.background = new THREE.Color(0x0a0a0a);
-scene.fog = new THREE.Fog(0x0a0a0a, 14, 42);
-var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
-camera.position.set(0, 2.6, 9);
-var grid = new THREE.GridHelper(60, 30, 0xffffff, 0xffffff);
-grid.material.transparent = true; grid.material.opacity = 0.13; grid.position.y = -0.02; scene.add(grid);
-scene.add(new THREE.AmbientLight(0xffffff, 0.55));
-var key = new THREE.DirectionalLight(0xffffff, 1.05); key.position.set(5, 9, 6); scene.add(key);
-var rim = new THREE.DirectionalLight(0xd7e2ea, 0.35); rim.position.set(-7, 3, -5); scene.add(rim);
-function M(c, r, f){ return new THREE.MeshStandardMaterial({ color: c, roughness: r == null ? 0.45 : r, metalness: 0.12, flatShading: !!f }); }
-function MT(c, o){ return new THREE.MeshStandardMaterial({ color: c, roughness: 0.12, metalness: 0, transparent: true, opacity: o }); }
-function V(x, y, z){ return new THREE.Vector3(x, y, z); }
-var Z = { x: 0, y: 0, z: 0 };
-function scat(j){ var a = j * 2.399; return V(Math.cos(a) * (6 + (j % 3) * 2.2), 2.2 + ((j * 0.618) % 1) * 4.5, Math.sin(a) * (5 + (j % 4) * 1.5)); }
-function rrot(j){ return { x: j * 1.3, y: j * 2.1, z: j * 0.7 }; }
-var parts = [];
-/* part(mesh, ASSEMBLED pos/rot, EXPLODED pos/rot, scroll window [w0,w1]) */
-function part(g, tp, tr, fp, fr, w0, w1){ g.position.copy(fp); g.rotation.set(fr.x, fr.y, fr.z); scene.add(g); parts.push({ g: g, fp: fp, fr: fr, tp: tp, tr: tr, w0: w0, w1: w1 }); }
-
-var MBody = M(0xd7e2ea, 0.3), MDark = M(0xffffff, 0.6), MGlass = MT(0xbfd4e0, 0.5), MLight = M(0xf6e7b2, 0.3);
-function wheel(){ var g = new THREE.Group();
-  var t = new THREE.Mesh(new THREE.CylinderGeometry(0.56, 0.56, 0.4, 22), MDark); t.rotation.z = Math.PI / 2; g.add(t);
-  var hub = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.44, 14), M(0xd8d8d8, 0.3)); hub.rotation.z = Math.PI / 2; g.add(hub);
-  return g; }
-part(new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.28, 1.95), MDark), V(0, 0.42, 0), Z, scat(1), rrot(1), 0.02, 0.2);
-part(new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.75, 1.85), MBody), V(0, 0.95, 0), Z, scat(2), rrot(2), 0.1, 0.32);
-part(wheel(), V(1.45, 0.56, 1.02), Z, scat(3), rrot(3), 0.22, 0.4);
-part(wheel(), V(-1.45, 0.56, 1.02), Z, scat(4), rrot(4), 0.28, 0.46);
-part(wheel(), V(1.45, 0.56, -1.02), Z, scat(5), rrot(5), 0.34, 0.52);
-part(wheel(), V(-1.45, 0.56, -1.02), Z, scat(6), rrot(6), 0.4, 0.58);
-part(new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.64, 1.7), MGlass), V(-0.25, 1.62, 0), Z, scat(7), rrot(7), 0.5, 0.68);
-part(new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.16, 1.78), MBody), V(1.55, 1.4, 0), Z, scat(8), rrot(8), 0.62, 0.78);
-var l1 = new THREE.Mesh(new THREE.SphereGeometry(0.13, 12, 10), MLight);
-var l2 = new THREE.Mesh(new THREE.SphereGeometry(0.13, 12, 10), MLight);
-part(l1, V(2.12, 0.98, 0.6), Z, scat(9), rrot(9), 0.72, 0.84);
-part(l2, V(2.12, 0.98, -0.6), Z, scat(10), rrot(10), 0.76, 0.88);
-var wing = new THREE.Group();
-var wb = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.1, 1.8), MDark); wb.position.y = 0.42; wing.add(wb);
-[-0.7, 0.7].forEach(function(z){ var st = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.42, 0.1), MDark); st.position.set(0, 0.2, z); wing.add(st); });
-part(wing, V(-2.0, 1.32, 0), Z, scat(11), rrot(11), 0.82, 0.94);
-var tMx = 0, tMy = 0, mx = 0, my = 0, sp = 0, tsp = 0;
-window.addEventListener('pointermove', function(e){
-  tMx = e.clientX / window.innerWidth - 0.5; tMy = e.clientY / window.innerHeight - 0.5;
-}, { passive: true });
-function size(){
-  var w = window.innerWidth, h = window.innerHeight;
-  renderer.setSize(w, h, false);
-  camera.aspect = w / h; camera.updateProjectionMatrix();
+function scrollDist(){
+  var r = host.getBoundingClientRect();
+  var max = host.offsetHeight - w.innerHeight;
+  var v = -r.top; return v<0?0:v>max?max:v;
 }
-size(); window.addEventListener('resize', size, { passive: true });
-var doc = document.documentElement, hidden = false;
-document.addEventListener('visibilitychange', function(){ hidden = document.hidden; });
-var t0 = 0;
-renderer.setAnimationLoop(function(t){
-  if (hidden) return;
-  var dt = Math.min((t - t0) / 1000, 0.05); t0 = t;
-  var max = doc.scrollHeight - window.innerHeight;
-  tsp = max > 0 ? (window.scrollY || doc.scrollTop) / max : 0;
-  sp += (tsp - sp) * 0.06;
-  mx += (tMx - mx) * 0.05; my += (tMy - my) * 0.05;
-
-  for (var pi = 0; pi < parts.length; pi++) {
-    var P = parts[pi];
-    var k = (sp - P.w0) / (P.w1 - P.w0); k = k < 0 ? 0 : k > 1 ? 1 : k; k = k * k * (3 - 2 * k);
-    P.g.position.set(P.fp.x + (P.tp.x - P.fp.x) * k, P.fp.y + (P.tp.y - P.fp.y) * k, P.fp.z + (P.tp.z - P.fp.z) * k);
-    P.g.rotation.set(P.fr.x + (P.tr.x - P.fr.x) * k, P.fr.y + (P.tr.y - P.fr.y) * k, P.fr.z + (P.tr.z - P.fr.z) * k);
+function ev(e){
+  if (typeof e === 'number') return e;
+  if (typeof e === 'string') { var v = S[e]; return v == null ? 0 : v; }
+  var op = e[0], a = e.slice(1).map(ev);
+  switch(op){
+    case '+': return a.reduce(function(x,y){return x+y;});
+    case '-': return a.length===1 ? -a[0] : a.reduce(function(x,y){return x-y;});
+    case '*': return a.reduce(function(x,y){return x*y;});
+    case '/': return a[0]/(a[1]||1);
+    case 'pow': return Math.pow(a[0],a[1]);
+    case 'min': return Math.min.apply(null,a);
+    case 'max': return Math.max.apply(null,a);
+    case 'clamp01': return clamp01(a[0]);
+    case 'inv': return 1-a[0];
+    case 'lerp': return lerp(a[0],a[1],a[2]);
+    default: return 0;
   }
-  var oa = sp * 1.15 + 0.5 + mx * 0.7;
-  camera.position.set(Math.sin(oa) * 8.4, 2.5 + my * -1.2 + sp * 0.7, Math.cos(oa) * 8.4);
-  camera.lookAt(0, 1.05, 0);
-  renderer.render(scene, camera);
+}
+function update(){
+  pending=false;
+  tS = scrollDist();
+  if (!init || RM.matches){ sS = tS; init = true; }
+  else sS = lerp(sS, tS, SPEC.smooth);
+  if (Math.abs(sS - tS) < 0.08) sS = tS;
+  mx = RM.matches ? 0 : lerp(mx, tMx, SPEC.pointerSmooth);
+  my = RM.matches ? 0 : lerp(my, tMy, SPEC.pointerSmooth);
+
+  S.s = sS; S.p = clamp01(sS / SPEC.runway); S.mx = mx; S.my = my;
+  S.vh = w.innerHeight; S.vw = w.innerWidth;
+  for (var b in SPEC.beats){
+    var win = SPEC.beats[b];
+    if (win.length >= 4){
+      var en = smoothstep(win[0], win[1], sS), ex = smoothstep(win[2], win[3], sS);
+      S[b+'.enter']=en; S[b+'.exit']=ex; S[b+'.active']=en*(1-ex);
+    } else {
+      var v = smoothstep(win[0], win[1], sS);
+      S[b+'.enter']=v; S[b+'.exit']=0; S[b+'.active']=v;
+    }
+  }
+  for (var i=0;i<SPEC.vars.length;i++){
+    var vd = SPEC.vars[i], val = ev(vd.expr);
+    if (vd.fixed != null) val = val.toFixed(vd.fixed);
+    host.style.setProperty(vd.name, vd.tpl ? vd.tpl.replace('@', val) : String(val) + (vd.unit || ''));
+  }
+  // visibility gates: fade-by-position layers become focusable only when arrived
+  var gates = host.querySelectorAll('[data-cine-gate]');
+  for (var g=0; g<gates.length; g++){
+    var el = gates[g], sig = S[el.getAttribute('data-cine-gate')] || 0;
+    el.style.visibility = sig > 0.01 ? 'visible' : 'hidden';
+    if (el.hasAttribute('data-cine-interactive')) el.style.pointerEvents = sig > 0.98 ? 'auto' : 'none';
+  }
+  if (Math.abs(sS-tS) > 0.08 || Math.abs(mx-tMx) > 0.001 || Math.abs(my-tMy) > 0.001) tick();
+}
+function tick(){ if(!pending){ pending=true; requestAnimationFrame(update); } }
+w.addEventListener('scroll', tick, { passive:true });
+w.addEventListener('resize', tick, { passive:true });
+w.addEventListener('pointermove', function(e){
+  tMx = e.clientX / w.innerWidth - 0.5; tMy = e.clientY / w.innerHeight - 0.5; tick();
+}, { passive:true });
+tick();
 });
 })();</script>
 </body>
