@@ -295,15 +295,17 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
 .crv--hero{height:190vh}
 .crv-pin{position:sticky;top:0;height:100vh;overflow:hidden;display:grid;place-items:end center;padding-bottom:9vh;
   background:radial-gradient(120% 90% at 60% 30%, color-mix(in srgb,var(--at) 14%,var(--bg)) 0%, var(--bg) 70%)}
-/* the masked state must never read as void: a blurred ghost of the same shot fills the frame */
+/* the masked state must never read as void: a blurred BRIGHT ghost of the same shot fills the
+ * frame, and the photo itself starts nearly full — the moment reads "photo grows to full-bleed",
+ * never "black void births a photo" (a dark reveal shot dimmed to nothing, observed live) */
 .crv-ghost{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  filter:blur(34px) brightness(.5) saturate(1.15);transform:scale(1.12);opacity:calc(1 - .6 * var(--rv,0))}
+  filter:blur(26px) brightness(.82) saturate(1.15);transform:scale(1.12);opacity:calc(1 - .55 * var(--rv,0))}
 .crv-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  transform:scale(calc(1.18 - .18 * var(--rv,0)));
-  clip-path:inset(calc(26% - 26% * var(--rv,0)) calc(10% - 10% * var(--rv,0)) round calc(24px - 24px * var(--rv,0)))}
+  transform:scale(calc(1.12 - .12 * var(--rv,0)));
+  clip-path:inset(calc(12% - 12% * var(--rv,0)) calc(6% - 6% * var(--rv,0)) round calc(20px - 20px * var(--rv,0)))}
 .crv-shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,color-mix(in srgb,var(--bg) 78%,transparent) 96%)}
 .crv-copy{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center;
-  opacity:calc(.3 + .7 * var(--rv,0));transform:translateY(calc(36px - 36px * var(--rv,0)))}
+  opacity:calc(.55 + .45 * var(--rv,0));transform:translateY(calc(28px - 28px * var(--rv,0)))}
 .crv-copy h2{font-size:clamp(2rem,5.4vw,4.4rem);text-shadow:0 8px 44px color-mix(in srgb,var(--bg) 80%,transparent)}
 .crv--hero .crv-copy{opacity:1;transform:none}
 .crv--hero .crv-copy h1{font-size:clamp(2.6rem,7vw,6.2rem);text-shadow:0 10px 60px color-mix(in srgb,var(--bg) 78%,transparent)}
@@ -330,7 +332,7 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
 <script type="application/json" data-cine-spec="cinev">{"runway":3200,"smooth":0.14,"pointerSmooth":0.12,"beats":{"intro":[96,640],"k0":[768,1056,1408,1632],"k1":[1824,2112,2464,2688],"tail":[2688,3104]},"vars":[{"name":"--title-y","expr":["*","intro.enter",-190],"unit":"px","fixed":1},{"name":"--title-o","expr":["inv","intro.enter"],"fixed":3},{"name":"--p1-o","expr":["*","k0.active",["inv","k0.exit"]],"fixed":3},{"name":"--p1-y","expr":["+",["*","k0.exit",-70],["*",["inv","k0.enter"],52]],"unit":"px","fixed":1},{"name":"--p2-o","expr":["*","k1.active",["inv","k1.exit"]],"fixed":3},{"name":"--p2-y","expr":["+",["*","k1.exit",-70],["*",["inv","k1.enter"],52]],"unit":"px","fixed":1},{"name":"--tail-o","expr":["pow","tail.enter",1.4],"fixed":3},{"name":"--tail-y","expr":["*",["inv",["pow","tail.enter",1.4]],120],"unit":"px","fixed":1}]}</script>
 <section class="cine cinev" data-cine="cinev" data-mf-scrub-scope style="--mf-runway:3200px" aria-label="Built For Your Drive scroll story">
   <div class="cine-stage">
-    <div class="bed"><video muted playsinline preload="auto" crossorigin="anonymous" data-mf-play="scrub" data-mf-lerp="0.12" aria-hidden="true" poster="media/car-drive-poster.jpg"><source src="https://assets.mixkit.co/videos/52427/52427-720.mp4" type="video/mp4"></video></div>
+    <div class="bed"><video muted playsinline preload="auto" data-mf-play="scrub" data-mf-lerp="0.12" aria-hidden="true" poster="media/car-drive-poster.jpg"><source src="media/car-drive.mp4" type="video/mp4"></video></div>
     <h1 class="cine-title cinev-title">Built For Your Drive</h1>
     <div class="cine-intro"><p>Watch it come together — every part certified before it reaches you.</p></div>
     
@@ -366,7 +368,7 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
   </div>
 </section>
 <section class="sheet hlband"><div class="wrap"><div class="hlband-in">
-  <div class="hl" data-mf-reveal><span class="micro">Certified</span><h3>200 checks</h3><p>Every single car.</p></div><div class="hl" data-mf-reveal><span class="micro">Fair</span><h3>One price</h3><p>No haggling theatre.</p></div><div class="hl" data-mf-reveal><span class="micro">Safe</span><h3>7-day return</h3><p>Money back, no forms.</p></div>
+  <div class="hl" data-mf-reveal><span class="micro">Certified</span><h3>200 checks</h3><p>Every single car.</p></div>
   </div></div></section>
 <section class="fgrid wrap" id="work"><h2 data-mf-reveal data-mf-split="words">How buying works</h2>
   <div class="fgrid-in" data-mf-stagger>
@@ -621,9 +623,10 @@ function playScrub(v){
   // The safety net for cross-origin clips where frame capture is impossible (tainted canvas):
   // capture failure used to silently abandon the video on a BLACK first frame, observed live.
   function directScrub(){
-    var dur = 0;
+    var dur = 0, seeking = false;
     function ready(){ dur = v.duration || 0; try { v.currentTime = Math.min(0.2, dur * 0.02) || 0.05; } catch (e) {} }
     v.addEventListener('loadedmetadata', ready);
+    v.addEventListener('seeked', function(){ seeking = false; });
     if (v.readyState >= 1) ready();
     (function tick(){
       requestAnimationFrame(tick);
@@ -631,7 +634,11 @@ function playScrub(v){
       target = progress();
       smooth += (target - smooth) * lerpK;
       var t2 = 0.05 + smooth * Math.max(0.1, dur - 0.2);
-      if (Math.abs((v.currentTime || 0) - t2) > 0.034) { try { v.currentTime = t2; } catch (e) {} }
+      // one seek in flight at a time: a seek storm paints BLACK between keyframes
+      if (!seeking && Math.abs((v.currentTime || 0) - t2) > 0.034) {
+        seeking = true;
+        try { v.currentTime = t2; } catch (e) { seeking = false; }
+      }
     })();
   }
   captureFrames(v, 960, maxN, function(frames, fw, fh){
