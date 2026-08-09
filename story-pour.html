@@ -83,6 +83,7 @@ html.mf-in [data-mf-in]{opacity:1;transform:none;filter:none;
   transition:opacity .85s var(--ease) var(--mf-delay),transform .85s var(--ease) var(--mf-delay),filter .85s var(--ease) var(--mf-delay)}
 
 /* ---- split text ---- */
+.mf-split .mf-w{display:inline-block;white-space:nowrap}
 .mf-split .mf-sp{display:inline-block;will-change:transform,opacity}
 .mf-split--chars .mf-sp,.mf-split--words .mf-sp{opacity:0;transform:translateY(.5em) rotate(1.2deg)}
 .mf-in .mf-split .mf-sp{opacity:1;transform:none;
@@ -396,13 +397,28 @@ function split(){
     el.__mfSplit = 1;
     if (mode === 'chars' && complexRe.test(text)) mode = 'words';
     if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', text);
-    var parts = mode === 'chars' ? text.split('') : text.split(/(\s+)/);
     var html = '', n = 0;
-    for (var j=0;j<parts.length;j++){
-      var p = parts[j];
-      if (/^\s+$/.test(p)) { html += p === ' ' ? ' ' : p; continue; }
-      html += '<span class="mf-sp" aria-hidden="true" style="--i:'+(n++)+'">'+
-              p.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>';
+    var escT = function(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); };
+    if (mode === 'chars') {
+      // chars are wrapped PER WORD in a nowrap group — bare inline-block char spans let the
+      // browser break lines mid-word ("Poured S / lowly, Ag / ed Longer", observed live)
+      var words = text.split(/(\s+)/);
+      for (var j=0;j<words.length;j++){
+        var wd = words[j];
+        if (!wd) continue;
+        if (/^\s+$/.test(wd)) { html += ' '; continue; }
+        var inner = '';
+        for (var c=0;c<wd.length;c++) inner += '<span class="mf-sp" aria-hidden="true" style="--i:'+(n++)+'">'+escT(wd[c])+'</span>';
+        html += '<span class="mf-w">'+inner+'</span>';
+      }
+    } else {
+      var parts = text.split(/(\s+)/);
+      for (var j2=0;j2<parts.length;j2++){
+        var p = parts[j2];
+        if (!p) continue;
+        if (/^\s+$/.test(p)) { html += ' '; continue; }
+        html += '<span class="mf-sp" aria-hidden="true" style="--i:'+(n++)+'">'+escT(p)+'</span>';
+      }
     }
     el.innerHTML = html;
     el.classList.add('mf-split', 'mf-split--'+mode);
@@ -894,23 +910,36 @@ var parts = [];
 /* part(mesh, ASSEMBLED pos/rot, EXPLODED pos/rot, scroll window [w0,w1]) */
 function part(g, tp, tr, fp, fr, w0, w1){ g.position.copy(fp); g.rotation.set(fr.x, fr.y, fr.z); scene.add(g); parts.push({ g: g, fp: fp, fr: fr, tp: tp, tr: tr, w0: w0, w1: w1 }); }
 
-var MGlassMat = MT(0xdfe8ee, 0.22); MGlassMat.side = THREE.DoubleSide;
-var MBottle = MT(0x274a2e, 0.85), MLiquid = M(0xc9772e, 0.22), MDark = M(0xffffff, 0.5);
-var table = new THREE.Mesh(new THREE.CylinderGeometry(3.4, 3.4, 0.14, 30), M(0xffffff, 0.7)); table.position.y = -0.08; scene.add(table);
+/* REAL glassware, not primitives-taped-together (client: "very immature"): the bottle and the
+ * stemmed glass are lathe-turned profiles, glass is a physical transmission material, the
+ * liquid colour matches the DRINK, and soft contact shadows replace any table geometry. */
+var LIQ = 0xc9772e;
+function lathe(pts, seg, mat){ var v2 = pts.map(function(p){ return new THREE.Vector2(p[0], p[1]); });
+  return new THREE.Mesh(new THREE.LatheGeometry(v2, seg || 28), mat); }
+var MGlassMat = new THREE.MeshPhysicalMaterial({ color: 0xf2f6f8, roughness: 0.03, metalness: 0,
+  transparent: true, opacity: 0.25, transmission: 0.85, thickness: 0.35, side: THREE.DoubleSide });
+var MBottleGlass = new THREE.MeshPhysicalMaterial({ color: 0x18351f, roughness: 0.06, metalness: 0,
+  clearcoat: 1, clearcoatRoughness: 0.06 });
+var MLabel = M(0xf3ecdd, 0.55), MFoil = M(0x7fd4ff, 0.3), MLiquid = M(LIQ, 0.18), MShadow = MT(0x000000, 0.22);
+function shadow(r, x){ var s = new THREE.Mesh(new THREE.CircleGeometry(r, 26), MShadow);
+  s.rotation.x = -Math.PI / 2; s.position.set(x, 0.005, 0); scene.add(s); return s; }
+shadow(1.15, 1.05); var bShadow = shadow(0.75, -1.7);
+/* the stemmed glass: foot -> stem -> bowl, one lathe profile */
 var glass = new THREE.Group();
-var gw = new THREE.Mesh(new THREE.CylinderGeometry(0.92, 0.76, 1.85, 26, 1, true), MGlassMat); gw.position.y = 0.93; glass.add(gw);
-var gb = new THREE.Mesh(new THREE.CylinderGeometry(0.76, 0.76, 0.1, 26), MGlassMat); gb.position.y = 0.05; glass.add(gb);
-var liq = new THREE.Mesh(new THREE.CylinderGeometry(0.72, 0.7, 1, 24), MLiquid); glass.add(liq);
+glass.add(lathe([[0,0],[0.52,0.015],[0.55,0.05],[0.5,0.09],[0.08,0.12],[0.055,0.85],[0.09,0.92],[0.3,1.02],[0.44,1.22],[0.46,1.45],[0.42,1.72],[0.36,1.9]], 30, MGlassMat));
+var liq = new THREE.Mesh(new THREE.CylinderGeometry(0.41, 0.3, 1, 24), MLiquid); glass.add(liq); liq.visible = false;
+var rip = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.03, 8, 20), MLiquid); rip.rotation.x = Math.PI / 2; glass.add(rip); rip.visible = false;
 part(glass, V(1.05, 0, 0), Z, V(1.05, -4, 0), Z, 0.0, 0.14);
+/* the wine bottle: body -> shoulder curve -> neck -> lip, lathe profile + label band + foil */
 var bottle = new THREE.Group();
-var bb = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.52, 1.9, 22), MBottle); bottle.add(bb);
-var sh = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.5, 0.55, 22), MBottle); sh.position.y = 1.22; bottle.add(sh);
-var nk = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.6, 16), MBottle); nk.position.y = 1.75; bottle.add(nk);
-var cp = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.2, 14), MDark); cp.position.y = 2.1; bottle.add(cp);
-part(bottle, V(-1.7, 1.0, 0), Z, V(-6, 2.4, 0), { x: 0, y: 0, z: 0.8 }, 0.0, 0.16);
-var stream = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.075, 1, 10), MLiquid);
+bottle.add(lathe([[0,0],[0.4,0.01],[0.45,0.06],[0.46,0.12],[0.46,1.18],[0.44,1.38],[0.36,1.56],[0.22,1.72],[0.145,1.86],[0.13,2.28],[0.15,2.32],[0.155,2.38],[0.125,2.42]], 30, MBottleGlass));
+var lab = new THREE.Mesh(new THREE.CylinderGeometry(0.468, 0.468, 0.62, 30, 1, true), MLabel); lab.position.y = 0.68; bottle.add(lab);
+var lb2 = new THREE.Mesh(new THREE.CylinderGeometry(0.469, 0.469, 0.1, 30, 1, true), MFoil); lb2.position.y = 0.92; bottle.add(lb2);
+var foil = new THREE.Mesh(new THREE.CylinderGeometry(0.145, 0.135, 0.5, 20), MFoil); foil.position.y = 2.2; bottle.add(foil);
+part(bottle, V(-1.7, 0, 0), Z, V(-6.5, 2.2, 0), { x: 0, y: 0, z: 0.9 }, 0.0, 0.16);
+var stream = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.06, 1, 10), MLiquid);
 stream.visible = false; scene.add(stream);
-var POUR = { bottle: bottle, stream: stream, liq: liq };
+var POUR = { bottle: bottle, stream: stream, liq: liq, rip: rip, bShadow: bShadow };
 var tMx = 0, tMy = 0, mx = 0, my = 0, sp = 0, tsp = 0;
 window.addEventListener('pointermove', function(e){
   tMx = e.clientX / window.innerWidth - 0.5; tMy = e.clientY / window.innerHeight - 0.5;
@@ -939,19 +968,29 @@ renderer.setAnimationLoop(function(t){
     P.g.rotation.set(P.fr.x + (P.tr.x - P.fr.x) * k, P.fr.y + (P.tr.y - P.fr.y) * k, P.fr.z + (P.tr.z - P.fr.z) * k);
   }
   var pour = Math.max(0, Math.min(1, (sp - 0.18) / 0.3));
-  var fill = Math.max(0, Math.min(1, (sp - 0.24) / 0.62));
+  var fill = Math.max(0, Math.min(1, (sp - 0.26) / 0.6));
   if (sp > 0.165) {   /* after the entry, the pour math owns the bottle */
-    POUR.bottle.rotation.z = pour * 2.05;
-    POUR.bottle.position.x = -1.7 + pour * 1.15;
-    POUR.bottle.position.y = 1.0 + pour * 2.0;
+    POUR.bottle.rotation.z = -pour * 2.15;
+    POUR.bottle.position.x = -1.7 + pour * 0.62;
+    POUR.bottle.position.y = pour * 3.8;
+    POUR.bShadow.position.x = POUR.bottle.position.x + pour * 1.6;
+    POUR.bShadow.scale.setScalar(Math.max(0.2, 1 - pour * 0.65));
   }
-  var lh = 0.12 + fill * 1.5;
-  POUR.liq.scale.y = lh; POUR.liq.position.y = 0.1 + lh / 2;
+  var lh = 0.05 + fill * 0.72;
+  POUR.liq.visible = fill > 0.015;
+  POUR.liq.scale.y = lh; POUR.liq.position.y = 1.02 + lh / 2;
+  var surfY = 1.02 + lh;
   var pouring = pour > 0.85 && fill < 0.985;
   POUR.stream.visible = pouring;
-  if (pouring) { var top = 2.75, bot = 0.15 + lh;
+  POUR.rip.visible = pouring && fill > 0.03;
+  if (pouring) {
+    var top = 2.42, bot = surfY;
     POUR.stream.scale.y = Math.max(0.05, top - bot);
-    POUR.stream.position.set(1.05, bot + (top - bot) / 2, 0); }
+    POUR.stream.position.set(1.0, bot + (top - bot) / 2, 0);
+    POUR.rip.position.y = surfY + 0.012;
+    var rs = 0.85 + 0.25 * Math.sin(t * 0.02);
+    POUR.rip.scale.set(rs, rs, 1);
+  }
   var oa = sp * 1.15 + 0.5 + mx * 0.7;
   camera.position.set(Math.sin(oa) * 8.4, 2.5 + my * -1.2 + sp * 0.7, Math.cos(oa) * 8.4);
   camera.lookAt(0, 1.05, 0);

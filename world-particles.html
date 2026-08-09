@@ -83,6 +83,7 @@ html.mf-in [data-mf-in]{opacity:1;transform:none;filter:none;
   transition:opacity .85s var(--ease) var(--mf-delay),transform .85s var(--ease) var(--mf-delay),filter .85s var(--ease) var(--mf-delay)}
 
 /* ---- split text ---- */
+.mf-split .mf-w{display:inline-block;white-space:nowrap}
 .mf-split .mf-sp{display:inline-block;will-change:transform,opacity}
 .mf-split--chars .mf-sp,.mf-split--words .mf-sp{opacity:0;transform:translateY(.5em) rotate(1.2deg)}
 .mf-in .mf-split .mf-sp{opacity:1;transform:none;
@@ -399,13 +400,28 @@ function split(){
     el.__mfSplit = 1;
     if (mode === 'chars' && complexRe.test(text)) mode = 'words';
     if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', text);
-    var parts = mode === 'chars' ? text.split('') : text.split(/(\s+)/);
     var html = '', n = 0;
-    for (var j=0;j<parts.length;j++){
-      var p = parts[j];
-      if (/^\s+$/.test(p)) { html += p === ' ' ? ' ' : p; continue; }
-      html += '<span class="mf-sp" aria-hidden="true" style="--i:'+(n++)+'">'+
-              p.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>';
+    var escT = function(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); };
+    if (mode === 'chars') {
+      // chars are wrapped PER WORD in a nowrap group — bare inline-block char spans let the
+      // browser break lines mid-word ("Poured S / lowly, Ag / ed Longer", observed live)
+      var words = text.split(/(\s+)/);
+      for (var j=0;j<words.length;j++){
+        var wd = words[j];
+        if (!wd) continue;
+        if (/^\s+$/.test(wd)) { html += ' '; continue; }
+        var inner = '';
+        for (var c=0;c<wd.length;c++) inner += '<span class="mf-sp" aria-hidden="true" style="--i:'+(n++)+'">'+escT(wd[c])+'</span>';
+        html += '<span class="mf-w">'+inner+'</span>';
+      }
+    } else {
+      var parts = text.split(/(\s+)/);
+      for (var j2=0;j2<parts.length;j2++){
+        var p = parts[j2];
+        if (!p) continue;
+        if (/^\s+$/.test(p)) { html += ' '; continue; }
+        html += '<span class="mf-sp" aria-hidden="true" style="--i:'+(n++)+'">'+escT(p)+'</span>';
+      }
     }
     el.innerHTML = html;
     el.classList.add('mf-split', 'mf-split--'+mode);
@@ -882,6 +898,17 @@ scene.background = new THREE.Color(0x04202e);
 scene.fog = new THREE.Fog(0x04202e, 9, 30);
 var camera = new THREE.PerspectiveCamera(50, 1, 0.1, 60);
 camera.position.set(0, 0, 12);
+
+var drift = [];
+if (typeof PROPS !== 'undefined') {
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+  var dl = new THREE.DirectionalLight(0xffffff, 0.9); dl.position.set(4, 6, 8); scene.add(dl);
+  for (var dI = 0; dI < 4; dI++) {
+    var dp = PROPS[dI % PROPS.length](); dp.scale.setScalar(1.1);
+    dp.position.set((dI % 2 ? -1 : 1) * (5.5 + dI), (dI - 1.5) * 2.4, -3 - dI * 2.5);
+    drift.push(dp); scene.add(dp);
+  }
+}
 var N = 5200, cur = new Float32Array(N * 3);
 var T = [new Float32Array(N*3), new Float32Array(N*3), new Float32Array(N*3), new Float32Array(N*3)];
 for (var i = 0; i < N; i++) {
@@ -949,6 +976,10 @@ renderer.setAnimationLoop(function(t){
   pts.rotation.y += dt * 0.14 + (tsp - sp) * 0.3;
   pts.rotation.x = my * 0.25;
   dust.rotation.y -= dt * 0.01;
+  for (var dJ = 0; dJ < drift.length; dJ++) {
+    drift[dJ].rotation.y += dt * 0.35; drift[dJ].rotation.x += dt * 0.12;
+    drift[dJ].position.y += Math.sin(t * 0.001 + dJ * 2) * 0.004;
+  }
   camera.position.x = mx * 2.6;
   camera.position.y = -my * 2.1;
   camera.lookAt(0, 0, 0);

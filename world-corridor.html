@@ -83,6 +83,7 @@ html.mf-in [data-mf-in]{opacity:1;transform:none;filter:none;
   transition:opacity .85s var(--ease) var(--mf-delay),transform .85s var(--ease) var(--mf-delay),filter .85s var(--ease) var(--mf-delay)}
 
 /* ---- split text ---- */
+.mf-split .mf-w{display:inline-block;white-space:nowrap}
 .mf-split .mf-sp{display:inline-block;will-change:transform,opacity}
 .mf-split--chars .mf-sp,.mf-split--words .mf-sp{opacity:0;transform:translateY(.5em) rotate(1.2deg)}
 .mf-in .mf-split .mf-sp{opacity:1;transform:none;
@@ -398,13 +399,28 @@ function split(){
     el.__mfSplit = 1;
     if (mode === 'chars' && complexRe.test(text)) mode = 'words';
     if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', text);
-    var parts = mode === 'chars' ? text.split('') : text.split(/(\s+)/);
     var html = '', n = 0;
-    for (var j=0;j<parts.length;j++){
-      var p = parts[j];
-      if (/^\s+$/.test(p)) { html += p === ' ' ? ' ' : p; continue; }
-      html += '<span class="mf-sp" aria-hidden="true" style="--i:'+(n++)+'">'+
-              p.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>';
+    var escT = function(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); };
+    if (mode === 'chars') {
+      // chars are wrapped PER WORD in a nowrap group — bare inline-block char spans let the
+      // browser break lines mid-word ("Poured S / lowly, Ag / ed Longer", observed live)
+      var words = text.split(/(\s+)/);
+      for (var j=0;j<words.length;j++){
+        var wd = words[j];
+        if (!wd) continue;
+        if (/^\s+$/.test(wd)) { html += ' '; continue; }
+        var inner = '';
+        for (var c=0;c<wd.length;c++) inner += '<span class="mf-sp" aria-hidden="true" style="--i:'+(n++)+'">'+escT(wd[c])+'</span>';
+        html += '<span class="mf-w">'+inner+'</span>';
+      }
+    } else {
+      var parts = text.split(/(\s+)/);
+      for (var j2=0;j2<parts.length;j2++){
+        var p = parts[j2];
+        if (!p) continue;
+        if (/^\s+$/.test(p)) { html += ' '; continue; }
+        html += '<span class="mf-sp" aria-hidden="true" style="--i:'+(n++)+'">'+escT(p)+'</span>';
+      }
     }
     el.innerHTML = html;
     el.classList.add('mf-split', 'mf-split--'+mode);
@@ -881,6 +897,7 @@ scene.background = new THREE.Color(0x04202e);
 scene.fog = new THREE.Fog(0x04202e, 7, 30);
 var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
 camera.position.set(0, 0.4, 9);
+
 var matCore = new THREE.MeshStandardMaterial({ color: 0x7fd4ff, flatShading: true, metalness: 0.25, roughness: 0.45 });
 var matLine = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.3 });
 var chapters = [];
@@ -892,22 +909,35 @@ station(0, function(g){
   cage.scale.setScalar(1.28); g.add(cage);
 });
 station(-12, function(g){
-  g.add(new THREE.Mesh(new THREE.TorusKnotGeometry(1.5, 0.4, 140, 18), matCore));
-  g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.TorusKnotGeometry(1.5, 0.4, 44, 8)), matLine));
+  if (typeof PROPS !== 'undefined') { var p = PROPS[0](); p.scale.setScalar(2.1); p.position.y = -0.6; g.add(p); }
+  else {
+    g.add(new THREE.Mesh(new THREE.TorusKnotGeometry(1.5, 0.4, 140, 18), matCore));
+    g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.TorusKnotGeometry(1.5, 0.4, 44, 8)), matLine));
+  }
 });
 station(-24, function(g){
   for (var r = 0; r < 3; r++) {
     var ring = new THREE.Mesh(new THREE.TorusGeometry(1.6 + r * 0.5, 0.055, 12, 90), matCore);
     ring.rotation.x = Math.PI / 2 + r * 0.38; ring.rotation.y = r * 0.55; g.add(ring);
   }
-  g.add(new THREE.Mesh(new THREE.OctahedronGeometry(0.7, 0), matCore));
+  if (typeof PROPS !== 'undefined') { var p2 = PROPS[1 % PROPS.length](); p2.scale.setScalar(1.1); g.add(p2); }
+  else g.add(new THREE.Mesh(new THREE.OctahedronGeometry(0.7, 0), matCore));
 });
 station(-36, function(g){
-  for (var i = 0; i < 14; i++) {
-    var s = new THREE.Mesh(new THREE.TetrahedronGeometry(0.32 + (i % 4) * 0.18, 0), matCore);
-    var a2 = i * 2.4;
-    s.position.set(Math.cos(a2) * (1.2 + (i % 3) * 0.8), ((i * 0.618) % 1 - 0.5) * 3.6, Math.sin(a2) * (1.2 + (i % 3) * 0.8));
-    s.rotation.set(i, i * 0.7, i * 0.3); g.add(s);
+  if (typeof PROPS !== 'undefined') {
+    for (var i = 0; i < 5; i++) {
+      var pp = PROPS[(i + 2) % PROPS.length]();
+      var a2 = i * 1.256;
+      pp.position.set(Math.cos(a2) * 2.5, ((i * 0.618) % 1 - 0.5) * 2.8, Math.sin(a2) * 2.5);
+      pp.scale.setScalar(0.95); pp.rotation.y = i; g.add(pp);
+    }
+  } else {
+    for (var i = 0; i < 14; i++) {
+      var s = new THREE.Mesh(new THREE.TetrahedronGeometry(0.32 + (i % 4) * 0.18, 0), matCore);
+      var a2 = i * 2.4;
+      s.position.set(Math.cos(a2) * (1.2 + (i % 3) * 0.8), ((i * 0.618) % 1 - 0.5) * 3.6, Math.sin(a2) * (1.2 + (i % 3) * 0.8));
+      s.rotation.set(i, i * 0.7, i * 0.3); g.add(s);
+    }
   }
 });
 var END_Z = -36;

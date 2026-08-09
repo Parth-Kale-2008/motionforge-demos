@@ -83,6 +83,7 @@ html.mf-in [data-mf-in]{opacity:1;transform:none;filter:none;
   transition:opacity .85s var(--ease) var(--mf-delay),transform .85s var(--ease) var(--mf-delay),filter .85s var(--ease) var(--mf-delay)}
 
 /* ---- split text ---- */
+.mf-split .mf-w{display:inline-block;white-space:nowrap}
 .mf-split .mf-sp{display:inline-block;will-change:transform,opacity}
 .mf-split--chars .mf-sp,.mf-split--words .mf-sp{opacity:0;transform:translateY(.5em) rotate(1.2deg)}
 .mf-in .mf-split .mf-sp{opacity:1;transform:none;
@@ -400,13 +401,28 @@ function split(){
     el.__mfSplit = 1;
     if (mode === 'chars' && complexRe.test(text)) mode = 'words';
     if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', text);
-    var parts = mode === 'chars' ? text.split('') : text.split(/(\s+)/);
     var html = '', n = 0;
-    for (var j=0;j<parts.length;j++){
-      var p = parts[j];
-      if (/^\s+$/.test(p)) { html += p === ' ' ? ' ' : p; continue; }
-      html += '<span class="mf-sp" aria-hidden="true" style="--i:'+(n++)+'">'+
-              p.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>';
+    var escT = function(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); };
+    if (mode === 'chars') {
+      // chars are wrapped PER WORD in a nowrap group — bare inline-block char spans let the
+      // browser break lines mid-word ("Poured S / lowly, Ag / ed Longer", observed live)
+      var words = text.split(/(\s+)/);
+      for (var j=0;j<words.length;j++){
+        var wd = words[j];
+        if (!wd) continue;
+        if (/^\s+$/.test(wd)) { html += ' '; continue; }
+        var inner = '';
+        for (var c=0;c<wd.length;c++) inner += '<span class="mf-sp" aria-hidden="true" style="--i:'+(n++)+'">'+escT(wd[c])+'</span>';
+        html += '<span class="mf-w">'+inner+'</span>';
+      }
+    } else {
+      var parts = text.split(/(\s+)/);
+      for (var j2=0;j2<parts.length;j2++){
+        var p = parts[j2];
+        if (!p) continue;
+        if (/^\s+$/.test(p)) { html += ' '; continue; }
+        html += '<span class="mf-sp" aria-hidden="true" style="--i:'+(n++)+'">'+escT(p)+'</span>';
+      }
     }
     el.innerHTML = html;
     el.classList.add('mf-split', 'mf-split--'+mode);
@@ -883,6 +899,140 @@ scene.background = new THREE.Color(0x08090b);
 scene.fog = new THREE.Fog(0x08090b, 16, 52);
 var camera = new THREE.PerspectiveCamera(46, 1, 0.1, 90);
 camera.position.set(0, 8, 20);
+
+function _m(c,r){ return new THREE.MeshStandardMaterial({ color: c, flatShading: true, roughness: r == null ? 0.55 : r, metalness: 0.12 }); }
+function _ms(c,r){ return new THREE.MeshStandardMaterial({ color: c, roughness: r == null ? 0.5 : r, metalness: 0.1 }); }
+var _MA = _m(0xe8702a), _MB = _m(0xf4f2ee), _MD = _m(0xa3a09a);
+/* FOOD wears REAL food colours + smooth shading, never the brand palette — a mono-green
+ * low-poly burger reads as a blob (client: "very cheap looking") */
+var _Bun = _ms(0xd9a066), _Patty = _ms(0x6b4226, 0.62), _Cheese = _ms(0xf2b632, 0.4),
+    _Tom = _ms(0xd94f3d, 0.45), _Lett = _m(0x7ab648, 0.5), _Cream = _ms(0xf7f3ea, 0.35),
+    _Choc = _ms(0x4c2f1c, 0.45), _Cone = _ms(0xc98d4e), _CoffeeM = _ms(0x6f4e37, 0.35),
+    _Crust = _ms(0xe0b36a), _Red = _ms(0xc93b34, 0.4), _Stem = _ms(0x6b4a2e, 0.6);
+function mkBurger(){ var g = new THREE.Group();
+  var b1 = new THREE.Mesh(new THREE.CylinderGeometry(1.02, 1.1, 0.32, 24), _Bun); b1.position.y = 0.16; g.add(b1);
+  var pt = new THREE.Mesh(new THREE.CylinderGeometry(1.12, 1.12, 0.28, 24), _Patty); pt.position.y = 0.46; g.add(pt);
+  var ch = new THREE.Mesh(new THREE.BoxGeometry(1.78, 0.07, 1.78), _Cheese); ch.position.y = 0.63; ch.rotation.y = Math.PI / 4; g.add(ch);
+  var lt = new THREE.Mesh(new THREE.CylinderGeometry(1.22, 1.28, 0.09, 11), _Lett); lt.position.y = 0.71; g.add(lt);
+  var b2 = new THREE.Mesh(new THREE.SphereGeometry(1.08, 24, 14, 0, Math.PI * 2, 0, Math.PI / 2), _Bun); b2.scale.y = 0.64; b2.position.y = 0.76; g.add(b2);
+  for (var sB = 0; sB < 5; sB++) { var se = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), _Cream);
+    var sa = sB * 1.256; se.position.set(Math.cos(sa) * 0.5, 1.3, Math.sin(sa) * 0.5); se.scale.y = 0.6; g.add(se); }
+  return g; }
+function mkDonut(){ var g = new THREE.Group();
+  g.add(new THREE.Mesh(new THREE.TorusGeometry(0.85, 0.4, 16, 32), _Bun));
+  var ic = new THREE.Mesh(new THREE.TorusGeometry(0.85, 0.3, 14, 32), _Choc); ic.position.z = 0.14; g.add(ic);
+  for (var i = 0; i < 8; i++) { var s = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.04, 0.22), i % 2 ? _Tom : _Cream);
+    var a = i * 0.785; s.position.set(Math.cos(a) * 0.85, Math.sin(a) * 0.85, 0.42); s.rotation.z = a + i; ic.add(s); }
+  g.rotation.x = -0.5; return g; }
+function mkIcecream(){ var g = new THREE.Group();
+  var co = new THREE.Mesh(new THREE.ConeGeometry(0.55, 1.5, 16), _Cone); co.rotation.x = Math.PI; co.position.y = -0.75; g.add(co);
+  var s1 = new THREE.Mesh(new THREE.SphereGeometry(0.62, 18, 14), _Cream); s1.position.y = 0.28; g.add(s1);
+  var s2 = new THREE.Mesh(new THREE.SphereGeometry(0.45, 16, 12), _Choc); s2.position.y = 0.98; g.add(s2);
+  return g; }
+function mkApple(){ var g = new THREE.Group();
+  var ap = new THREE.Mesh(new THREE.SphereGeometry(0.85, 20, 16), _Red); ap.scale.y = 0.92; g.add(ap);
+  var st = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.07, 0.5, 8), _Stem); st.position.y = 0.95; st.rotation.z = 0.25; g.add(st);
+  var lf = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.5, 6), _Lett); lf.position.set(0.25, 1.0, 0); lf.rotation.z = 1.35; g.add(lf);
+  return g; }
+function mkCoffee(){ var g = new THREE.Group();
+  var cu = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.5, 0.95, 22), _Cream); cu.position.y = 0.48; g.add(cu);
+  var ha = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.08, 10, 18), _Cream); ha.position.set(0.72, 0.5, 0); g.add(ha);
+  var sa = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.85, 0.08, 24), _Cream); g.add(sa);
+  var fo = new THREE.Mesh(new THREE.CylinderGeometry(0.56, 0.56, 0.06, 20), _CoffeeM); fo.position.y = 0.99; g.add(fo);
+  return g; }
+function mkPizza(){ var g = new THREE.Group();
+  var sl = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 0.12, 20, 1, false, 0, 0.9), _Cheese); g.add(sl);
+  var cr = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.11, 10, 8, 0.9), _Crust); cr.rotation.x = Math.PI / 2; cr.position.y = 0.06; g.add(cr);
+  for (var i = 0; i < 3; i++) { var tp = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.06, 12), _Tom);
+    var a = 0.18 + i * 0.27, r = 0.55 + (i % 2) * 0.5; tp.position.set(Math.cos(a) * r, 0.09, Math.sin(a) * r); g.add(tp); }
+  g.rotation.z = 0.35; return g; }
+function mkDumbbell(){ var g = new THREE.Group();
+  var bar = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 1.9, 10), _MB); bar.rotation.z = Math.PI / 2; g.add(bar);
+  [-0.8, 0.8].forEach(function(x){ var p = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.3, 14), _MA);
+    p.rotation.z = Math.PI / 2; p.position.x = x; g.add(p); });
+  return g; }
+function mkKettlebell(){ var g = new THREE.Group();
+  var bo = new THREE.Mesh(new THREE.SphereGeometry(0.7, 14, 12), _MA); g.add(bo);
+  var ha = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.1, 8, 14, Math.PI), _MB); ha.position.y = 0.72; g.add(ha);
+  return g; }
+function mkBottle(){ var g = new THREE.Group();
+  var bo = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 1.5, 14), _MA); g.add(bo);
+  var ca = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.3, 10), _MB); ca.position.y = 0.9; g.add(ca);
+  return g; }
+function mkHouse(){ var g = new THREE.Group();
+  var ba = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.1, 1.3), _MA); ba.position.y = 0.55; g.add(ba);
+  var ro = new THREE.Mesh(new THREE.ConeGeometry(1.25, 0.85, 4), _MB); ro.position.y = 1.5; ro.rotation.y = Math.PI / 4; g.add(ro);
+  var dr = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.6, 0.06), _MD); dr.position.set(0, 0.3, 0.66); g.add(dr);
+  return g; }
+function mkTower(){ var g = new THREE.Group();
+  for (var i = 0; i < 3; i++) { var f = new THREE.Mesh(new THREE.BoxGeometry(1.1 - i * 0.22, 0.75, 1.1 - i * 0.22), i % 2 ? _MB : _MA);
+    f.position.y = 0.38 + i * 0.78; g.add(f); }
+  return g; }
+function mkTree(){ var g = new THREE.Group();
+  var tr = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.2, 0.9, 8), _MB); tr.position.y = 0.45; g.add(tr);
+  var cr = new THREE.Mesh(new THREE.IcosahedronGeometry(0.75, 1), _MA); cr.position.y = 1.35; g.add(cr);
+  return g; }
+function mkCoins(){ var g = new THREE.Group();
+  for (var i = 0; i < 4; i++) { var c = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.14, 18), _MA);
+    c.position.set(Math.sin(i * 2.1) * 0.12, 0.09 + i * 0.16, Math.cos(i * 1.7) * 0.12); g.add(c); }
+  return g; }
+function mkChart(){ var g = new THREE.Group();
+  [0.5, 0.95, 1.5].forEach(function(h, i){ var b = new THREE.Mesh(new THREE.BoxGeometry(0.45, h, 0.45), i === 2 ? _MA : _MB);
+    b.position.set((i - 1) * 0.62, h / 2, 0); g.add(b); });
+  return g; }
+function mkGem(){ var g = new THREE.Group();
+  var d = new THREE.Mesh(new THREE.OctahedronGeometry(0.85, 0), _MA); d.scale.y = 1.25; g.add(d);
+  return g; }
+function mkPlane(){ var g = new THREE.Group();
+  var bd = new THREE.Mesh(new THREE.ConeGeometry(0.28, 1.9, 4), _MA); bd.rotation.x = Math.PI / 2; g.add(bd);
+  var wg = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.06, 0.5), _MD); wg.position.z = 0.1; g.add(wg);
+  var tl = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.06, 0.3), _MD); tl.position.set(0, 0.18, -0.75); tl.rotation.x = 0.5; g.add(tl);
+  return g; }
+function mkBalloon(){ var g = new THREE.Group();
+  var en = new THREE.Mesh(new THREE.SphereGeometry(0.85, 14, 12), _MA); en.scale.y = 1.12; en.position.y = 0.6; g.add(en);
+  var bk = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.34, 0.44), _MB); bk.position.y = -0.85; g.add(bk);
+  return g; }
+function mkCase(){ var g = new THREE.Group();
+  var bo = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.0, 0.5), _MA); g.add(bo);
+  var ha = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.07, 8, 12, Math.PI), _MB); ha.position.y = 0.55; g.add(ha);
+  return g; }
+function mkParcel(){ var g = new THREE.Group();
+  var bo = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 1.2), _MD); g.add(bo);
+  var t1 = new THREE.Mesh(new THREE.BoxGeometry(1.26, 0.22, 1.26), _MA); g.add(t1);
+  return g; }
+function mkBag(){ var g = new THREE.Group();
+  var bo = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.3, 0.6), _MA); g.add(bo);
+  [-0.3, 0.3].forEach(function(x){ var h = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.05, 6, 12, Math.PI), _MB);
+    h.position.set(x, 0.68, 0); g.add(h); });
+  return g; }
+function mkBooks(){ var g = new THREE.Group();
+  for (var i = 0; i < 3; i++) { var b = new THREE.Mesh(new THREE.BoxGeometry(1.5 - i * 0.12, 0.26, 1.05), i % 2 ? _MA : _MB);
+    b.position.y = 0.14 + i * 0.27; b.rotation.y = (i - 1) * 0.3; g.add(b); }
+  return g; }
+function mkPencil(){ var g = new THREE.Group();
+  var sh = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 1.7, 6), _MA); g.add(sh);
+  var tp = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.4, 6), _MD); tp.position.y = 1.05; g.add(tp);
+  var er = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.2, 8), _MB); er.position.y = -0.95; g.add(er);
+  g.rotation.z = 0.6; return g; }
+function mkCap(){ var g = new THREE.Group();
+  var cr = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.6, 0.45, 12), _MB); g.add(cr);
+  var bd = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.1, 1.7), _MA); bd.position.y = 0.28; bd.rotation.y = Math.PI / 4; g.add(bd);
+  return g; }
+function mkVinyl(){ var g = new THREE.Group();
+  var d = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.06, 24), _MB); g.add(d);
+  var l = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.08, 18), _MA); g.add(l);
+  g.rotation.x = 0.5; return g; }
+function mkNote(){ var g = new THREE.Group();
+  var h = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 10), _MA); h.scale.y = 0.7; g.add(h);
+  var st = new THREE.Mesh(new THREE.BoxGeometry(0.09, 1.7, 0.09), _MB); st.position.set(0.34, 0.8, 0); g.add(st);
+  var fl = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.09), _MA); fl.position.set(0.62, 1.45, 0); fl.rotation.z = -0.5; g.add(fl);
+  return g; }
+function mkSpeaker(){ var g = new THREE.Group();
+  var bx = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.6, 0.8), _MB); g.add(bx);
+  var w1 = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.1, 16), _MA); w1.rotation.x = Math.PI / 2; w1.position.set(0, -0.3, 0.42); g.add(w1);
+  var w2 = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.1, 14), _MA); w2.rotation.x = Math.PI / 2; w2.position.set(0, 0.42, 0.42); g.add(w2);
+  return g; }
+var PROPS = [mkBooks, mkPencil, mkCap, mkGem];
 var grid = new THREE.GridHelper(90, 45, 0xf4f2ee, 0xf4f2ee);
 grid.material.transparent = true; grid.material.opacity = 0.22;
 scene.add(grid);
@@ -891,13 +1041,19 @@ function path(u){ var a = u * Math.PI * 2; return { x: Math.sin(a) * 16 + Math.s
 var toys = new THREE.Group();
 for (var i = 0; i < 26; i++) {
   var u = i / 26, p = path(u), off = (i % 2 ? 1 : -1) * (3 + (i % 5));
-  var kind = i % 4;
-  var mesh = kind === 0 ? new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.6, 7), mat)
-    : kind === 1 ? new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 1.2), mat)
-    : kind === 2 ? new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.28, 10, 26), mat)
-    : new THREE.Mesh(new THREE.IcosahedronGeometry(0.85, 0), mat);
-  mesh.position.set(p.x + Math.sin(i * 7) * off * 0.35, kind === 2 ? 0.95 : 0.7, p.z + Math.cos(i * 5) * off * 0.35);
-  if (kind === 2) mesh.rotation.x = Math.PI / 2;
+  var kind = i % 4, mesh;
+  if (typeof PROPS !== 'undefined') {
+    mesh = PROPS[i % PROPS.length]();
+    mesh.scale.setScalar(1.35);
+    mesh.position.set(p.x + Math.sin(i * 7) * off * 0.35, 0.75, p.z + Math.cos(i * 5) * off * 0.35);
+  } else {
+    mesh = kind === 0 ? new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.6, 7), mat)
+      : kind === 1 ? new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 1.2), mat)
+      : kind === 2 ? new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.28, 10, 26), mat)
+      : new THREE.Mesh(new THREE.IcosahedronGeometry(0.85, 0), mat);
+    mesh.position.set(p.x + Math.sin(i * 7) * off * 0.35, kind === 2 ? 0.95 : 0.7, p.z + Math.cos(i * 5) * off * 0.35);
+    if (kind === 2) mesh.rotation.x = Math.PI / 2;
+  }
   mesh.rotation.y = i;
   toys.add(mesh);
 }
