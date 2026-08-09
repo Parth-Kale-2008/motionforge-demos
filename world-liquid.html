@@ -76,7 +76,10 @@ p{margin:0;text-wrap:pretty}
  * runtime has announced itself (html.mf-js). Blocked script, CSP, an extension, a crash before
  * boot — the page simply shows everything, statically, instead of white voids. */
 html.mf-js [data-mf-in]{opacity:0;transform:translateY(26px);filter:blur(10px)}
-.mf-in [data-mf-in]{opacity:1;transform:none;filter:none;
+/* html.mf-in, not .mf-in: the reveal must OUTWEIGH the html.mf-js hidden rule above
+ * (0-2-1 vs 0-2-1, later wins) — a bare .mf-in descendant selector loses and the hero
+ * text never appears (observed live: 3-D pages rendered their world with no words) */
+html.mf-in [data-mf-in]{opacity:1;transform:none;filter:none;
   transition:opacity .85s var(--ease) var(--mf-delay),transform .85s var(--ease) var(--mf-delay),filter .85s var(--ease) var(--mf-delay)}
 
 /* ---- split text ---- */
