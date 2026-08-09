@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GoodFor</title>
+<meta name="description" content="Scan any barcode and understand every ingredient inside.">
+<meta name="theme-color" content="#04202e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap">
+
+<script src="https://unpkg.com/three@0.147.0/build/three.min.js"></script>
+<style>:root{
+  --bg:#04202e; --ink:#ffffff; --dim:#a8adb5; --line:#ffffff1a;
+  --at:#7fd4ff; --on-at:#04202e;
+  --fd:'Orbitron',Georgia,serif; --fb:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+  --pad:clamp(20px,4.5vw,72px);
+  --h1:clamp(3rem,9vw,8.6rem);
+  --h2:clamp(2rem,4.8vw,4rem);
+  --body:clamp(.95rem,.4vw+.82rem,1.12rem);
+  --micro:clamp(.62rem,.22vw+.55rem,.74rem);
+  --ease:cubic-bezier(.22,1,.36,1);
+  --ease-io:cubic-bezier(.16,1,.3,1);
+  --mf-delay:0ms;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:var(--body);
+  line-height:1.55;overflow-x:clip;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+img,video,canvas{display:block;max-width:100%}
+button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
+a{color:inherit}
+::selection{background:var(--at);color:var(--on-at)}
+:focus-visible{outline:2px solid var(--at);outline-offset:3px;border-radius:3px}
+.wrap{width:100%;max-width:1440px;margin-inline:auto;padding-inline:var(--pad)}
+h1,h2,h3{font-family:var(--fd);font-weight:400;margin:0;text-wrap:balance}
+h1{font-size:var(--h1);line-height:.92;letter-spacing:-.045em}
+h2{font-size:var(--h2);line-height:1;letter-spacing:-.03em}
+p{margin:0;text-wrap:pretty}
+.micro{font-size:var(--micro);text-transform:uppercase;letter-spacing:.2em;font-weight:500;color:var(--dim)}
+
+/* ---- awwwards-grade finishing layer ----
+   grain: the fine film texture 7 of 30 corpus prompts carry (Prisma, 3D Portfolio, Aura). Scoped
+   to its section — NEVER position:fixed page-wide, which forces whole-page compositing.
+   sheet: the rounded-top section sheet that slides over the hero (3D Portfolio's white Services
+   sheet, Aura's pricing cards) — gives the scroll a physical, layered feel. */
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+.sheet{position:relative;z-index:2;border-radius:clamp(24px,3vw,44px) clamp(24px,3vw,44px) 0 0;
+  margin-top:calc(-1 * clamp(24px,3vw,44px));
+  background:color-mix(in srgb,var(--ink) 4%,var(--bg));
+  box-shadow:0 -18px 50px -30px rgba(0,0,0,.35)}
+.bed{will-change:transform}
+.bed video,.bed canvas,.bed img{transform:scale(1.1)}   /* parallax headroom: edges never show */
+
+/* ---- liquid glass. Byte-for-byte the treatment that recurs in 7 of 30 corpus prompts,
+       including the mask-composite gradient border. Written once, here. ---- */
+.glass{position:relative;overflow:hidden;background:rgba(255,255,255,.01);
+  background-blend-mode:luminosity;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  border:0;box-shadow:inset 0 1px 1px rgba(255,255,255,.1)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.4px;
+  background:linear-gradient(180deg,rgba(255,255,255,.45) 0%,rgba(255,255,255,.15) 20%,
+    rgba(255,255,255,0) 40%,rgba(255,255,255,0) 60%,rgba(255,255,255,.15) 80%,rgba(255,255,255,.45) 100%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.glass--strong{backdrop-filter:blur(50px);-webkit-backdrop-filter:blur(50px);
+  box-shadow:4px 4px 4px rgba(0,0,0,.05),inset 0 1px 1px rgba(255,255,255,.15)}
+.glass--strong::before{background:linear-gradient(180deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.2) 20%,
+  rgba(255,255,255,0) 40%,rgba(255,255,255,0) 60%,rgba(255,255,255,.2) 80%,rgba(255,255,255,.5) 100%)}
+/* light palettes need the inverse fill, or the glass vanishes (VEX solves this the same way) */
+
+
+/* ---- entrance ladder. Generated delays land in --mf-delay. ---- */
+/* CONTENT IS NEVER HELD HOSTAGE BY JAVASCRIPT: the hidden starting states apply only once the
+ * runtime has announced itself (html.mf-js). Blocked script, CSP, an extension, a crash before
+ * boot — the page simply shows everything, statically, instead of white voids. */
+html.mf-js [data-mf-in]{opacity:0;transform:translateY(26px);filter:blur(10px)}
+/* html.mf-in, not .mf-in: the reveal must OUTWEIGH the html.mf-js hidden rule above
+ * (0-2-1 vs 0-2-1, later wins) — a bare .mf-in descendant selector loses and the hero
+ * text never appears (observed live: 3-D pages rendered their world with no words) */
+html.mf-in [data-mf-in]{opacity:1;transform:none;filter:none;
+  transition:opacity .85s var(--ease) var(--mf-delay),transform .85s var(--ease) var(--mf-delay),filter .85s var(--ease) var(--mf-delay)}
+
+/* ---- split text ---- */
+.mf-split .mf-sp{display:inline-block;will-change:transform,opacity}
+.mf-split--chars .mf-sp,.mf-split--words .mf-sp{opacity:0;transform:translateY(.5em) rotate(1.2deg)}
+.mf-in .mf-split .mf-sp{opacity:1;transform:none;
+  transition:opacity .7s var(--ease),transform .7s var(--ease);
+  transition-delay:calc(var(--mf-delay) + var(--i) * 34ms)}
+.mf-split--chars .mf-sp{transition-delay:calc(var(--mf-delay) + var(--i) * 18ms)}
+
+/* ---- reveal on enter ---- */
+html.mf-js [data-mf-reveal]{opacity:0;transform:translateY(30px);
+  transition:opacity .8s var(--ease),transform .8s var(--ease)}
+html.mf-js [data-mf-reveal].is-in{opacity:1;transform:none}
+/* boot crashed mid-way (mf-js already set): show everything, statically */
+html.mf-rescue [data-mf-in],html.mf-rescue [data-mf-reveal],html.mf-rescue .mf-split .mf-sp{
+  opacity:1!important;transform:none!important;filter:none!important;transition:none!important}
+
+/* ---- scroll-lit text: words brighten as the block crosses the viewport ---- */
+[data-mf-scrolltext]{--mf-lit:0;color:var(--dim)}
+[data-mf-scrolltext] .mf-sp{opacity:calc(.22 + .78 * clamp(0,(var(--mf-lit) * (var(--mf-split-n) + 6) - var(--i)),1));
+  transform:none;transition:none;color:var(--ink)}
+[data-mf-scrolltext].is-lit .mf-sp{opacity:1}
+
+/* ---- spotlight reveal: a CSS mask. No per-frame toDataURL(). ---- */
+[data-mf-spotlight]{position:relative;isolation:isolate}
+[data-mf-spotlight] .mf-reveal{position:absolute;inset:0;pointer-events:none;
+  -webkit-mask-image:radial-gradient(circle var(--mf-sr,260px) at var(--mf-sx,-999px) var(--mf-sy,-999px),
+    #000 0%,#000 40%,rgba(0,0,0,.75) 60%,rgba(0,0,0,.4) 75%,rgba(0,0,0,.12) 88%,transparent 100%);
+  mask-image:radial-gradient(circle var(--mf-sr,260px) at var(--mf-sx,-999px) var(--mf-sy,-999px),
+    #000 0%,#000 40%,rgba(0,0,0,.75) 60%,rgba(0,0,0,.4) 75%,rgba(0,0,0,.12) 88%,transparent 100%)}
+
+/* ---- marquee. --mf-mq-span is measured INCLUDING the flex gap. ---- */
+[data-mf-marquee]{overflow:hidden;display:flex;align-items:center;gap:clamp(24px,3vw,56px)}
+[data-mf-marquee] .mf-mq-track{display:flex;align-items:center;gap:inherit;flex:0 0 auto;
+  animation:mf-mq var(--mf-mq-dur,26s) linear infinite}
+[data-mf-marquee].is-paused .mf-mq-track{animation-play-state:paused}
+@keyframes mf-mq{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(-1 * var(--mf-mq-span,100%)),0,0)}}
+
+/* ---- media bed. No scrim: contrast is the job of the glass chrome. ---- */
+.bed{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.bed video,.bed canvas,.bed img{width:100%;height:100%;object-fit:cover}
+.stage{position:relative;isolation:isolate;min-height:100svh;display:flex;flex-direction:column}
+.stage > *{position:relative;z-index:1}
+
+/* ---- controls ---- */
+.pausebtn{position:absolute;right:16px;bottom:16px;z-index:6;border-radius:999px;
+  padding:.5em 1.1em;font-size:var(--micro);font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  background:rgba(0,0,0,.42);color:#fff;backdrop-filter:blur(8px);pointer-events:auto}
+.btn{display:inline-flex;align-items:center;gap:.6em;border-radius:999px;padding:1em 1.9em;
+  font-weight:600;font-size:.95rem;letter-spacing:.01em;background:var(--at);color:var(--on-at);
+  text-decoration:none;box-shadow:0 10px 30px -12px color-mix(in srgb,var(--at) 55%,transparent);
+  transition:transform .3s var(--ease),filter .3s var(--ease),box-shadow .3s var(--ease)}
+.btn::after{content:"\2192";display:inline-block;transition:transform .3s var(--ease)}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.06);
+  box-shadow:0 16px 40px -14px color-mix(in srgb,var(--at) 70%,transparent)}
+.btn:hover::after{transform:translate(3px,-2px)}
+.btn--ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn--ghost:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+
+/* ---- reduced motion: every primitive collapses, the page still reads ---- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  [data-mf-in],[data-mf-reveal],.mf-split .mf-sp{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}
+  [data-mf-marquee] .mf-mq-track{animation:none}
+  [data-mf-scrolltext] .mf-sp{opacity:1}
+  .btn{transition:none}
+}
+@media print{ .bed,.pausebtn{display:none} [data-mf-in],[data-mf-reveal]{opacity:1;transform:none;filter:none} }
+/* The nav lives at the TOP OF THE PAGE and scrolls away with the hero — explicit user decision
+   ("it should not come down"): absolute, not fixed. The scroll-progress bar (runtime) is the
+   only chrome that persists while reading. */
+.mf-nav{position:absolute;top:0;left:0;right:0;z-index:120;display:flex;align-items:center;
+  justify-content:space-between;gap:24px;padding-block:clamp(14px,2vh,26px)}
+.mf-links a{position:relative;text-decoration:none;padding:.35em .75em}
+.mf-links a::after{content:"";position:absolute;left:.75em;right:.75em;bottom:.15em;height:1.5px;
+  background:var(--at);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
+.mf-links a:hover::after{transform:scaleX(1)}
+/* the reading-progress hairline — persistent, tiny, alive */
+.mf-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:200;background:var(--at);
+  transform:scaleX(0);transform-origin:left;pointer-events:none}
+.mf-logo{font-family:var(--fd);font-size:1.35rem;letter-spacing:-.02em;text-decoration:none}
+.mf-links{display:none;gap:4px;border-radius:999px;padding:5px}
+.mf-links a{padding:.5em 1em;border-radius:999px;font-size:.86rem;text-decoration:none;color:var(--dim);
+  transition:color .3s var(--ease),background .3s var(--ease)}
+.mf-links a:hover{color:var(--ink);background:rgba(255,255,255,.08)}
+@media(min-width:900px){.mf-links{display:flex}}
+/* the nav is FIXED (out of flow), so every hero must clear it itself — without the top padding
+   a bed-less hero's headline renders at the very top, colliding with the nav row */
+.hero-in{margin-top:auto;padding-top:clamp(84px,11vh,130px);padding-bottom:clamp(40px,7vh,96px);max-width:min(100%,1180px)}
+.hero-in.is-sticky{position:sticky;top:0;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end}
+.hero-sub{margin-top:clamp(18px,2.4vh,30px);max-width:46ch;color:var(--dim);font-size:1.06rem}
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:clamp(24px,3.4vh,40px)}
+.stats{display:flex;flex-wrap:wrap;gap:clamp(20px,4vw,64px);margin:clamp(32px,5vh,64px) 0 0;
+  padding:clamp(18px,2.4vh,28px) clamp(20px,3vw,34px);border-radius:20px}
+.stats dt{font-family:var(--fd);font-size:clamp(1.7rem,3.4vw,2.9rem);line-height:1;letter-spacing:-.03em}
+.stats dd{margin:.5em 0 0}
+.mq-band{padding-block:clamp(26px,4vh,52px);border-block:1px solid var(--line)}
+.mq-in{display:flex;align-items:center;gap:20px}
+.mq-in > [data-mf-marquee]{flex:1;min-width:0}
+.mq-in span{font-family:var(--fd);font-size:clamp(1.1rem,2vw,1.9rem);color:var(--dim);white-space:nowrap}
+.mq-pause{flex:0 0 auto;padding:.5em 1.1em;font-size:var(--micro)}
+.manifesto{padding-block:clamp(90px,16vh,220px)}
+.lede{font-family:var(--fd);font-size:clamp(1.5rem,3.6vw,3rem);line-height:1.14;letter-spacing:-.02em;max-width:22ch}
+.feat{padding-block:clamp(60px,10vh,140px)}
+.feat-grid{display:grid;gap:clamp(14px,1.6vw,22px);margin-top:clamp(34px,5vh,64px);
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
+.feat-card{border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+.feat-card img{aspect-ratio:4/3;object-fit:cover;width:100%}
+.feat-body{padding:clamp(18px,2.2vw,26px);display:flex;flex-direction:column;gap:.55em}
+.feat-body h3{font-size:1.24rem;letter-spacing:-.01em}
+.feat-body p{color:var(--dim);font-size:.95rem}
+.spot{position:relative;min-height:88svh;display:grid;place-items:center;overflow:hidden}
+.spot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.spot-copy{position:relative;z-index:2;text-align:center;max-width:28ch}
+.spot-copy p{margin-top:1em;color:var(--dim)}
+.cta{padding-block:clamp(90px,16vh,200px);text-align:center;display:flex;flex-direction:column;
+  align-items:center;gap:clamp(18px,2.6vh,32px)}
+.cta p{max-width:44ch;color:var(--dim)}
+footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
+
+/* ---- conversion body treatments ---- */
+.frows{padding-block:clamp(64px,10vh,140px)}
+.frows h2{margin-bottom:clamp(28px,5vh,64px)}
+.frow{display:grid;gap:clamp(20px,3.5vw,56px);align-items:center;margin-bottom:clamp(44px,8vh,110px)}
+@media(min-width:800px){.frow{grid-template-columns:1.05fr 1fr}.frow--rev{direction:rtl}.frow--rev>*{direction:ltr}}
+.frow-media{margin:0;border-radius:22px;overflow:hidden;background:color-mix(in srgb,var(--ink) 6%,transparent);min-height:220px;display:flex;align-items:center;justify-content:center}
+.frow-media img{width:100%;height:100%;max-height:460px;object-fit:cover}
+.frow-ix{font-size:2rem;opacity:.35}
+.frow-copy{display:flex;flex-direction:column;gap:.7em;align-items:flex-start}
+.frow-copy h3{font-size:clamp(1.4rem,2.6vw,2.1rem)}
+.frow-copy p{color:var(--dim);max-width:46ch}
+.link-cta{text-decoration:none;font-weight:600;margin-top:.4em;border-bottom:1px solid color-mix(in srgb,var(--at) 55%,transparent)}
+.link-cta span{display:inline-block;transition:transform .25s var(--ease)}
+.link-cta:hover span{transform:translateX(4px)}
+.fgrid{padding-block:clamp(64px,10vh,140px)}
+.fgrid h2{margin-bottom:clamp(28px,5vh,56px)}
+.fgrid-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:clamp(14px,1.6vw,24px)}
+.fgrid-card{border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
+.fgrid-card img{width:100%;height:190px;object-fit:cover}
+.fgrid-body{padding:clamp(18px,2.2vw,28px);display:flex;flex-direction:column;gap:.55em;flex:1}
+.fgrid-body p{color:var(--dim);font-size:.95rem}
+.hlband{padding-block:clamp(56px,9vh,120px);background:color-mix(in srgb,var(--ink) 4%,var(--bg))}
+.hlband-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:clamp(22px,3vw,44px)}
+.hl h3{font-size:clamp(1.15rem,2vw,1.5rem);margin:.35em 0 .3em}
+.hl p{color:var(--dim);font-size:.94rem}
+.statsband{padding-block:clamp(48px,8vh,110px)}
+.statsband .stats{justify-content:space-around;width:100%}
+.galgrid{padding-block:clamp(40px,7vh,100px)}
+.galgrid-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:clamp(12px,1.4vw,22px)}
+.galgrid figure{margin:0;border-radius:18px;overflow:hidden}
+.galgrid img{width:100%;height:300px;object-fit:cover;transition:transform .6s var(--ease)}
+.galgrid figure:hover img{transform:scale(1.04)}
+.faq{padding-block:clamp(64px,10vh,140px);max-width:860px}
+.faq h2{margin-bottom:clamp(24px,4vh,48px)}
+.faq-item{border-bottom:1px solid var(--line);padding:4px 0}
+.faq-item summary{display:flex;justify-content:space-between;align-items:center;gap:16px;cursor:pointer;list-style:none;padding:18px 0;font-weight:600;font-size:clamp(1rem,1.6vw,1.18rem)}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-x{font-size:1.4rem;color:var(--dim);transition:transform .3s var(--ease)}
+.faq-item[open] .faq-x{transform:rotate(45deg)}
+.faq-item p{color:var(--dim);padding:0 0 20px;max-width:60ch}
+/* ---- hover physics: every card lifts, every image breathes — the page answers the cursor ---- */
+.fgrid-card,.hs-card,.stack-card,.hl{transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
+.fgrid-card:hover,.hs-card:hover{transform:translateY(-6px);box-shadow:0 26px 60px -28px rgba(0,0,0,.45)}
+.hl:hover{transform:translateY(-4px)}
+.frow-media{overflow:hidden}
+.frow-media img,.fgrid-card img,.hs-card img{transition:transform .7s var(--ease)}
+.frow:hover .frow-media img,.fgrid-card:hover img,.hs-card:hover img{transform:scale(1.05)}
+.step-n{transition:transform .35s var(--ease)}
+.steps-in li:hover .step-n{transform:scale(1.12) rotate(-6deg)}
+/* horizontal-scroll section */
+.hsec{position:relative}
+.hsec .hs-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden}
+.hsec .hs-track{display:flex;gap:clamp(16px,2vw,32px);align-items:stretch;padding-inline:var(--pad);will-change:transform}
+.hsec.is-native{height:auto!important}
+.hsec.is-native .hs-pin{position:static;height:auto;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-block:clamp(48px,8vh,100px)}
+.hs-lead{flex:0 0 min(38vw,420px);display:flex;flex-direction:column;justify-content:center;gap:1em}
+.hs-lead h2{font-size:clamp(1.9rem,3.6vw,3.2rem)}
+.hs-lead p{color:var(--dim);max-width:32ch}
+.hs-card{flex:0 0 min(72vw,420px);border-radius:22px;overflow:hidden;background:color-mix(in srgb,var(--ink) 6%,transparent);display:flex;flex-direction:column}
+.hs-card img{width:100%;height:min(44vh,340px);object-fit:cover}
+.hs-body{padding:clamp(16px,1.8vw,26px);display:flex;flex-direction:column;gap:.45em}
+.hs-body p{color:var(--dim);font-size:.94rem}
+.hs-tail{flex:0 0 auto;display:flex;align-items:center;padding-inline:clamp(24px,4vw,64px)}
+/* numbered steps */
+.stepsband{padding-block:clamp(64px,10vh,140px);max-width:980px}
+.stepsband h2{margin-bottom:clamp(26px,4vh,52px)}
+.steps-in{list-style:none;margin:0;padding:0;display:grid;gap:clamp(22px,3.4vh,40px)}
+.steps-in li{display:flex;gap:clamp(16px,2.4vw,30px);align-items:flex-start}
+.step-n{flex:0 0 auto;width:2.4em;height:2.4em;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:var(--at);color:var(--on-at);font-weight:700;font-family:var(--fd)}
+.steps-in h3{font-size:clamp(1.15rem,2vw,1.5rem);margin-bottom:.25em}
+.steps-in p{color:var(--dim);max-width:56ch}
+.im3-stage{min-height:100svh;position:relative;z-index:2;background:transparent}
+.im3-head{margin-block:auto;max-width:820px;display:flex;flex-direction:column;gap:clamp(14px,2.4vh,26px)}
+.im3-head h1{font-size:clamp(3rem,10vw,9rem);text-shadow:0 10px 60px color-mix(in srgb,var(--bg) 70%,transparent)}
+/* each world places its words differently — part of what keeps two 3-D pages apart */
+.im3--center .im3-head{align-items:center;text-align:center;margin-inline:auto}
+.im3--left .im3-head{align-items:flex-start;text-align:left;margin-right:auto}
+.im3--right .im3-head{align-items:flex-end;text-align:right;margin-left:auto}
+.im3--playground .im3-head h1{font-size:clamp(2.8rem,8.4vw,7.4rem)}
+.im3--liquid .im3-head h1{letter-spacing:-.02em}
+.im3-scrollcue{position:absolute;right:var(--pad);bottom:28px;display:flex;align-items:center;gap:10px;letter-spacing:.3em}
+.im3-line{display:inline-block;width:70px;height:1px;background:var(--ink);transform-origin:left;animation:im3cue 2.2s var(--ease) infinite}
+@keyframes im3cue{0%{transform:scaleX(0)}55%{transform:scaleX(1)}100%{transform:scaleX(0);transform-origin:right}}
+@media (prefers-reduced-motion:reduce){ .im3-line{animation:none} }
+/* everything after the hero floats OVER the 3D world — glass, not solid sheets */
+body{background:transparent}
+.sheet{background:color-mix(in srgb,var(--bg) 72%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.fgrid-card{background:color-mix(in srgb,var(--bg) 62%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.hlband{background:color-mix(in srgb,var(--ink) 6%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.frow-media,.hs-card,.stack-card{background:color-mix(in srgb,var(--bg) 62%,transparent)}
+.faq,.cta,.manifesto{position:relative;z-index:2}
+
+.mf3d{position:fixed;inset:0;z-index:0;pointer-events:none}
+.mf3d canvas{width:100%;height:100%;display:block}
+/* every failure path (no WebGL, blocked CDN, reduced motion) lands on the brand gradient */
+.mf-3d-off .mf3d canvas{display:none}
+.mf3d::before{content:"";position:absolute;inset:0;opacity:0;
+  background:radial-gradient(120% 90% at 70% 20%, color-mix(in srgb,var(--at) 24%,var(--bg)) 0%, var(--bg) 55%, color-mix(in srgb,var(--ink) 8%,var(--bg)) 100%)}
+.mf-3d-off .mf3d::before{opacity:1}
+@media (prefers-reduced-motion:reduce){ .mf3d canvas{display:none} .mf3d::before{opacity:1} }</style>
+</head>
+<body>
+
+<div class="mf3d" data-mf-3d aria-hidden="true"><canvas></canvas><div class="grain"></div></div>
+<section class="stage im3-stage im3--assembly im3--center" id="top">
+  <header class="mf-nav wrap" data-mf-in="chrome">
+  <a class="mf-logo" href="#top">GoodFor</a>
+  <nav class="mf-links glass" aria-label="Primary"><a href="#work">Work</a><a href="#studio">Studio</a><a href="#approach">Approach</a><a href="#contact">Contact</a></nav>
+  <a class="btn" href="#cta" data-mf-in="chrome" data-mf-magnet="90">Book free call</a>
+</header>
+  <div class="im3-head wrap">
+    <p class="micro" data-mf-in="eyebrow">scroll to build it</p>
+    <h1 data-mf-in="headline" data-mf-split="words">Know Exactly What You Are Eating</h1>
+    <p class="hero-sub" data-mf-in="sub">Scan any barcode and understand every ingredient inside.</p>
+    <div class="hero-cta" data-mf-in="cta"><a class="btn" href="#cta" data-mf-magnet="110">Book free call</a></div>
+  </div>
+  <div class="im3-scrollcue micro" data-mf-in="ornament" aria-hidden="true">scroll<span class="im3-line"></span></div>
+</section>
+<section class="sheet stepsband wrap"><h2 data-mf-reveal data-mf-split="words">How it works</h2>
+  <ol class="steps-in">
+  <li data-mf-reveal><span class="step-n">1</span><div><h3>Scan any product</h3><p>Point your phone at any barcode.</p></div></li><li data-mf-reveal><span class="step-n">2</span><div><h3>See the truth</h3><p>Ingredients, allergens, hidden risks.</p></div></li><li data-mf-reveal><span class="step-n">3</span><div><h3>Choose better</h3><p>Healthier swaps, instantly.</p></div></li>
+  </ol>
+</section>
+<section class="fgrid wrap" id="work"><h2 data-mf-reveal data-mf-split="words">How it works</h2>
+  <div class="fgrid-in" data-mf-stagger>
+  
+  <article class="fgrid-card glass" data-mf-reveal data-mf-tilt="6">
+    <div class="fgrid-body"><span class="micro">01</span><h3>Scan any product</h3><p>Point your phone at any barcode.</p></div>
+  </article>
+  <article class="fgrid-card glass" data-mf-reveal data-mf-tilt="6">
+    <div class="fgrid-body"><span class="micro">02</span><h3>See the truth</h3><p>Ingredients, allergens, hidden risks.</p></div>
+  </article>
+  <article class="fgrid-card glass" data-mf-reveal data-mf-tilt="6">
+    <div class="fgrid-body"><span class="micro">03</span><h3>Choose better</h3><p>Healthier swaps, instantly.</p></div>
+  </article>
+  </div>
+</section>
+<section class="hlband"><div class="wrap"><div class="hlband-in">
+  <div class="hl" data-mf-reveal><span class="micro">Trust</span><h3>Science-backed</h3><p>NHS-recognised sources.</p></div>
+  </div></div></section>
+<section class="faq wrap" id="faq"><h2 data-mf-reveal data-mf-split="words">Questions, answered</h2>
+  <div class="faq-in">
+  <details class="faq-item" data-mf-reveal><summary>Is it free?<span class="faq-x" aria-hidden="true">+</span></summary><p>The core scanner is free forever.</p></details>
+  </div>
+</section>
+<section class="cta wrap" id="cta"><h2 data-mf-reveal data-mf-split="words">Start the conversation.</h2><a class="btn" href="#cta" data-mf-reveal data-mf-magnet="120">Book free call</a></section><footer class="wrap"><p class="micro">GoodFor &copy; 2026</p></footer>
+<script>
+(function(){
+'use strict';
+var d=document, w=window;
+/* announce the runtime: hidden animation starting-states only apply under html.mf-js, so a
+ * page whose script never ran renders fully visible instead of as white voids */
+d.documentElement.classList.add('mf-js');
+var RM = w.matchMedia('(prefers-reduced-motion: reduce)');
+var reduced = function(){ return RM.matches; };
+var STATIC = /[?&]static\b/.test(location.search) || d.body.classList.contains('elementor-editor-active');
+function ready(fn){ d.readyState!=='loading' ? fn() : d.addEventListener('DOMContentLoaded',fn); }
+function clamp(v,a,b){ return v<a?a:v>b?b:v; }
+function lerp(a,b,t){ return a+(b-a)*t; }
+var DPR = Math.min(w.devicePixelRatio||1, 2);
+
+/* ---------------------------------------------------------------------------
+ * 1. ENTRANCE LADDER — generated, not hand-typed.
+ * Elements declare a role; the ladder derives the delay from role + document order.
+ * Corpus had 13 hand-written delay constants per page across 14 prompts.
+ * ------------------------------------------------------------------------- */
+var ROLE_BASE = { chrome:0, eyebrow:140, headline:240, sub:420, cta:560, stat:660, ornament:780 };
+var ROLE_STEP = { chrome:70, eyebrow:60, headline:0, sub:60, cta:90, stat:70, ornament:60 };
+function ladder(){
+  var seen = {};
+  var els = d.querySelectorAll('[data-mf-in]');
+  for (var i=0;i<els.length;i++){
+    var el = els[i], role = el.getAttribute('data-mf-in') || 'sub';
+    var base = ROLE_BASE[role]!=null ? ROLE_BASE[role] : 300;
+    var k = seen[role]|0; seen[role] = k+1;
+    var delay = base + k * (ROLE_STEP[role]||60);
+    if (el.hasAttribute('data-mf-delay')) delay = +el.getAttribute('data-mf-delay');
+    el.style.setProperty('--mf-delay', (reduced()?0:delay)+'ms');
+  }
+  // paint one frame at the initial state, then release — avoids a flash of final layout
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ d.documentElement.classList.add('mf-in'); }); });
+}
+
+/* ---------------------------------------------------------------------------
+ * 2. SPLIT TEXT — one engine. Corpus had six.
+ * data-mf-split="chars|words|lines". Wraps in spans that inherit the ladder delay.
+ * Keeps the original text in an aria-label so screen readers read a sentence, not letters.
+ * ------------------------------------------------------------------------- */
+function split(){
+  var els = d.querySelectorAll('[data-mf-split]');
+  // Complex scripts (Indic, Arabic, Thai) REQUIRE shaping: splitting to per-char spans displaces
+  // matras and breaks conjuncts in all three browser engines (W3C deva-gap #89/#117/#94). For
+  // such text, chars mode silently downgrades to words — the animation survives, the script does.
+  var complexRe = /[ऀ-෿฀-๿؀-ۿ]/;
+  for (var i=0;i<els.length;i++){
+    var el = els[i], mode = el.getAttribute('data-mf-split') || 'words';
+    var text = el.textContent.trim();
+    if (!text || el.__mfSplit) continue;
+    el.__mfSplit = 1;
+    if (mode === 'chars' && complexRe.test(text)) mode = 'words';
+    if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', text);
+    var parts = mode === 'chars' ? text.split('') : text.split(/(\s+)/);
+    var html = '', n = 0;
+    for (var j=0;j<parts.length;j++){
+      var p = parts[j];
+      if (/^\s+$/.test(p)) { html += p === ' ' ? ' ' : p; continue; }
+      html += '<span class="mf-sp" aria-hidden="true" style="--i:'+(n++)+'">'+
+              p.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>';
+    }
+    el.innerHTML = html;
+    el.classList.add('mf-split', 'mf-split--'+mode);
+    el.style.setProperty('--mf-split-n', n);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * 3. REVEAL ON ENTER — IntersectionObserver, single shared instance.
+ * ------------------------------------------------------------------------- */
+function reveals(){
+  var els = d.querySelectorAll('[data-mf-reveal]');
+  if (!els.length) return;
+  if (reduced() || !('IntersectionObserver' in w)){
+    for (var i=0;i<els.length;i++) els[i].classList.add('is-in');
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+  for (var k=0;k<els.length;k++) io.observe(els[k]);
+}
+
+/* ---------------------------------------------------------------------------
+ * 4. VIDEO PLAYERS — chosen by measured motion class. This is the point of the pipeline.
+ *
+ *   data-mf-play="loop"      native loop; only when the measured seam is < 8 steps
+ *   data-mf-play="crossfade" dissolve across the wrap (ambient loops with a visible seam)
+ *   data-mf-play="pingpong"  forward then reverse (one-way shots; a hard loop snaps backwards)
+ *   data-mf-play="scrub"     timeline bound to scroll (transformation arcs)
+ * ------------------------------------------------------------------------- */
+
+// -- crossfade: fade out "lead" seconds before the end, fade back in on restart.
+function playCrossfade(v){
+  var lead = +(v.getAttribute('data-mf-lead') || 0.55);
+  var ms   = +(v.getAttribute('data-mf-fade') || 500);
+  var raf = 0, fading = false;
+  v.loop = false; v.style.opacity = '0';
+  function fadeTo(target){
+    cancelAnimationFrame(raf);
+    var from = parseFloat(v.style.opacity) || 0, t0 = performance.now();
+    (function step(now){
+      var t = clamp((now - t0) / ms, 0, 1);
+      v.style.opacity = String(from + (target - from) * t);
+      if (t < 1) raf = requestAnimationFrame(step);
+    })(t0);
+  }
+  v.addEventListener('loadeddata', function(){ v.style.opacity='0'; v.play().catch(function(){}); fadeTo(1); });
+  v.addEventListener('timeupdate', function(){
+    if (!fading && v.duration && v.duration - v.currentTime <= lead){ fading = true; fadeTo(0); }
+  });
+  v.addEventListener('ended', function(){
+    v.style.opacity = '0';
+    setTimeout(function(){ v.currentTime = 0; v.play().catch(function(){}); fading = false; fadeTo(1); }, 90);
+  });
+  if (v.readyState >= 2) v.dispatchEvent(new Event('loadeddata'));
+}
+
+// -- shared: capture a video's frames once into ImageBitmaps, for pingpong + scrub.
+function captureFrames(v, maxW, maxN, done){
+  var cap = [], seen = {}, off = d.createElement('canvas'), ctx = off.getContext('2d', { alpha:false });
+  var scale = Math.min(1, maxW / (v.videoWidth || maxW));
+  off.width  = Math.max(2, Math.round((v.videoWidth||maxW) * scale));
+  off.height = Math.max(2, Math.round((v.videoHeight||maxW*0.5625) * scale));
+  function grab(){
+    var key = Math.round(v.currentTime * 1000);
+    if (seen[key] || cap.length >= maxN) return;
+    seen[key] = 1;
+    ctx.drawImage(v, 0, 0, off.width, off.height);
+    if (w.createImageBitmap) {
+      createImageBitmap(off).then(function(b){ cap.push(b); });
+    } else {
+      var c2 = d.createElement('canvas'); c2.width=off.width; c2.height=off.height;
+      c2.getContext('2d').drawImage(off,0,0); cap.push(c2);
+    }
+  }
+  function pump(){
+    grab();
+    if (v.ended || cap.length >= maxN) { done(cap, off.width, off.height); return; }
+    if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(pump);
+    else requestAnimationFrame(pump);
+  }
+  v.addEventListener('ended', function(){ done(cap, off.width, off.height); }, { once:true });
+  v.play().then(pump).catch(function(){ pump(); });
+}
+
+// object-cover draw math, done once and reused.
+function coverDraw(ctx, src, cw, ch, sw, sh){
+  var s = Math.max(cw / sw, ch / sh);
+  var dw = sw * s, dh = sh * s;
+  ctx.drawImage(src, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+}
+
+function makeCanvasFor(v){
+  var c = d.createElement('canvas');
+  c.className = v.className; c.setAttribute('aria-hidden','true');
+  c.style.cssText = v.style.cssText;
+  v.parentNode.insertBefore(c, v.nextSibling);
+  function size(){
+    var r = c.getBoundingClientRect();
+    c.width  = Math.max(2, Math.round(r.width  * DPR));
+    c.height = Math.max(2, Math.round(r.height * DPR));
+  }
+  size(); w.addEventListener('resize', size, { passive:true });
+  return c;
+}
+
+// -- pingpong: play forward, then reverse. For shots that travel and never come back.
+function playPingpong(v){
+  var fps = +(v.getAttribute('data-mf-fps') || 30);
+  v.loop = false; v.muted = true;
+  if (reduced()) { v.pause(); return; }               // hold frame 1 under reduced motion
+  captureFrames(v, 960, 300, function(cap, sw, sh){
+    if (cap.length < 4) { v.loop = true; v.play().catch(function(){}); return; }
+    var c = makeCanvasFor(v), ctx = c.getContext('2d', { alpha:false });
+    v.style.display = 'none';
+    var i = 0, dir = 1, last = 0, playing = true;
+    function tick(now){
+      requestAnimationFrame(tick);
+      if (!playing || now - last < 1000 / fps) return;
+      last = now;
+      coverDraw(ctx, cap[i], c.width, c.height, sw, sh);
+      i += dir;
+      if (i >= cap.length - 1) { i = cap.length - 1; dir = -1; }
+      else if (i <= 0) { i = 0; dir = 1; }
+    }
+    requestAnimationFrame(tick);
+    wirePause(v, function(p){ playing = !p; });
+  });
+}
+
+// -- scrub: bind the timeline to page scroll. For transformation arcs.
+function playScrub(v){
+  var lerpK = +(v.getAttribute('data-mf-lerp') || 0.12);
+  var maxN  = +(v.getAttribute('data-mf-frames') || 90);
+  v.loop = false; v.muted = true; v.pause();
+  var target = 0, smooth = 0, cap = null, sw = 0, sh = 0, c = null, ctx = null;
+
+  var scope = v.closest('[data-mf-scrub-scope]') || d.documentElement;
+  function progress(){
+    if (scope === d.documentElement){
+      var h = d.documentElement.scrollHeight - w.innerHeight;
+      return h > 0 ? clamp(w.scrollY / h, 0, 1) : 0;
+    }
+    var r = scope.getBoundingClientRect();
+    var span = r.height - w.innerHeight;
+    return span > 0 ? clamp(-r.top / span, 0, 1) : 0;
+  }
+  function frameAt(p){ return Math.min(cap.length - 1, Math.max(0, Math.round(p * (cap.length - 1)))); }
+
+  captureFrames(v, 960, maxN, function(frames, fw, fh){
+    if (!frames.length) return;
+    cap = frames; sw = fw; sh = fh;
+    c = makeCanvasFor(v); ctx = c.getContext('2d', { alpha:false });
+    v.style.display = 'none';
+    smooth = target = progress();
+    (function tick(){
+      requestAnimationFrame(tick);
+      target = progress();
+      smooth = reduced() ? target : lerp(smooth, target, lerpK);
+      if (Math.abs(smooth - target) < 0.0004) smooth = target;
+      coverDraw(ctx, cap[frameAt(smooth)], c.width, c.height, sw, sh);
+    })();
+  });
+}
+
+function initVideos(){
+  var vids = d.querySelectorAll('video[data-mf-play]');
+  for (var i=0;i<vids.length;i++){
+    var v = vids[i], mode = v.getAttribute('data-mf-play');
+    v.muted = true; v.playsInline = true; v.setAttribute('playsinline','');
+    if (STATIC){ v.pause(); continue; }
+    if (mode === 'scrub')          playScrub(v);
+    else if (mode === 'pingpong')  playPingpong(v);
+    else if (mode === 'crossfade') playCrossfade(v);
+    else {                                    // loop
+      v.loop = true;
+      if (!reduced()) v.play().catch(function(){});
+      wirePause(v, function(p){ p ? v.pause() : v.play().catch(function(){}); });
+    }
+  }
+}
+
+/* WCAG 2.2.2 — anything that moves for more than 5s needs a stop. Not one of the 19
+ * video prompts in the corpus shipped one. */
+function wirePause(v, onToggle){
+  var btn = d.querySelector('[data-mf-pause="'+(v.id||'')+'"]') ||
+            (v.parentNode && v.parentNode.querySelector('[data-mf-pause]'));
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    var paused = btn.getAttribute('aria-pressed') === 'true';
+    btn.setAttribute('aria-pressed', String(!paused));
+    btn.textContent = paused ? 'Pause' : 'Play';
+    btn.setAttribute('aria-label', (paused ? 'Pause' : 'Resume') + ' background motion');
+    onToggle(!paused);
+  });
+}
+
+/* ---------------------------------------------------------------------------
+ * 5. SPOTLIGHT REVEAL — CSS mask, not a per-frame PNG encode.
+ * Lithos and Synth Mode both call canvas.toDataURL() every 16ms to build this mask.
+ * A radial-gradient mask driven by two custom properties is the same picture, free.
+ * ------------------------------------------------------------------------- */
+function spotlight(){
+  var hosts = d.querySelectorAll('[data-mf-spotlight]');
+  if (!hosts.length || reduced()) return;
+  var mx = -9999, my = -9999, sx = -9999, sy = -9999, live = false;
+  w.addEventListener('pointermove', function(e){ mx = e.clientX; my = e.clientY; live = true; }, { passive:true });
+  (function tick(){
+    requestAnimationFrame(tick);
+    if (!live) return;
+    sx = lerp(sx < -9000 ? mx : sx, mx, 0.1);
+    sy = lerp(sy < -9000 ? my : sy, my, 0.1);
+    for (var i=0;i<hosts.length;i++){
+      var h = hosts[i], r = h.getBoundingClientRect();
+      h.style.setProperty('--mf-sx', (sx - r.left) + 'px');
+      h.style.setProperty('--mf-sy', (sy - r.top)  + 'px');
+      h.style.setProperty('--mf-sr', Math.round(Math.min(420, Math.max(160, w.innerWidth * 0.16))) + 'px');
+    }
+  })();
+}
+
+/* ---------------------------------------------------------------------------
+ * 6. MARQUEE — measures its own gap. All five corpus implementations translate to
+ * exactly -50% and leave a hole the width of the flex gap at the wrap.
+ * ------------------------------------------------------------------------- */
+function marquees(){
+  var els = d.querySelectorAll('[data-mf-marquee]');
+  for (var i=0;i<els.length;i++){
+    (function(el){
+      if (el.__mf) return; el.__mf = 1;
+      var speed = +(el.getAttribute('data-mf-marquee') || 55);   // px/s
+      var track = d.createElement('div'); track.className = 'mf-mq-track';
+      while (el.firstChild) track.appendChild(el.firstChild);
+      el.appendChild(track);
+      var clone = track.cloneNode(true); clone.setAttribute('aria-hidden','true');
+      el.appendChild(clone);
+      el.classList.add('is-marquee');
+      function measure(){
+        var cs = getComputedStyle(track);
+        var gap = parseFloat(cs.columnGap || cs.gap) || 0;
+        var span = (track.scrollWidth || 1) + gap;               // <- the gap the corpus forgets
+        el.style.setProperty('--mf-mq-span', span + 'px');
+        el.style.setProperty('--mf-mq-dur', (span / speed) + 's');
+      }
+      measure();
+      if (d.fonts && d.fonts.ready) d.fonts.ready.then(measure);  // webfont swap changes the width
+      w.addEventListener('resize', measure, { passive:true });
+      wirePauseEl(el);
+    })(els[i]);
+  }
+}
+function wirePauseEl(el){
+  var btn = el.parentNode && el.parentNode.querySelector('[data-mf-pause]');
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    var paused = btn.getAttribute('aria-pressed') === 'true';
+    btn.setAttribute('aria-pressed', String(!paused));
+    btn.textContent = paused ? 'Pause' : 'Play';
+    el.classList.toggle('is-paused', !paused);
+  });
+}
+
+/* ---------------------------------------------------------------------------
+ * 7. MAGNETIC + TILT — pointer affinity on CTAs. Pure transform, no layout.
+ * ------------------------------------------------------------------------- */
+function magnets(){
+  if (reduced() || !w.matchMedia('(hover:hover)').matches) return;
+  var els = d.querySelectorAll('[data-mf-magnet]');
+  for (var i=0;i<els.length;i++){
+    (function(el){
+      var pad = +(el.getAttribute('data-mf-magnet') || 90), str = 3;
+      w.addEventListener('pointermove', function(e){
+        var r = el.getBoundingClientRect();
+        var cx = r.left + r.width/2, cy = r.top + r.height/2;
+        var dx = e.clientX - cx, dy = e.clientY - cy;
+        var near = Math.abs(dx) < r.width/2 + pad && Math.abs(dy) < r.height/2 + pad;
+        el.style.transform = near ? 'translate3d('+(dx/str)+'px,'+(dy/str)+'px,0)' : 'translate3d(0,0,0)';
+        el.style.transition = near ? 'transform .3s ease-out' : 'transform .6s ease-in-out';
+      }, { passive:true });
+    })(els[i]);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * 8. SCROLL-LINKED TEXT OPACITY — per-word, driven by a single rAF.
+ * ------------------------------------------------------------------------- */
+function scrollText(){
+  var els = d.querySelectorAll('[data-mf-scrolltext]');
+  if (!els.length) return;
+  for (var i=0;i<els.length;i++) if (!els[i].__mfSplit){
+    els[i].setAttribute('data-mf-split','words');
+  }
+  split();
+  if (reduced()){ for (var k=0;k<els.length;k++) els[k].classList.add('is-lit'); return; }
+  (function tick(){
+    requestAnimationFrame(tick);
+    for (var j=0;j<els.length;j++){
+      var el = els[j], r = el.getBoundingClientRect();
+      var p = clamp((w.innerHeight * 0.8 - r.top) / (r.height + w.innerHeight * 0.6), 0, 1);
+      el.style.setProperty('--mf-lit', p);
+    }
+  })();
+}
+
+/* ---------------------------------------------------------------------------
+ * 9. COUNTERS
+ * ------------------------------------------------------------------------- */
+function counters(){
+  var els = d.querySelectorAll('[data-mf-count]');
+  if (!els.length) return;
+  if (reduced() || !('IntersectionObserver' in w)){
+    for (var i=0;i<els.length;i++) els[i].textContent = els[i].getAttribute('data-mf-count');
+    return;
+  }
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      var el = e.target, raw = el.getAttribute('data-mf-count');
+      var num = parseFloat(String(raw).replace(/[^0-9.]/g,'')) || 0;
+      var pre = String(raw).split(/[0-9]/)[0] || '';
+      var suf = String(raw).replace(/^[^0-9]*[0-9.,]+/,'');
+      var dec = (String(raw).split('.')[1]||'').replace(/[^0-9]/g,'').length;
+      var t0 = performance.now(), dur = 1500;
+      (function step(now){
+        var t = clamp((now-t0)/dur,0,1), e3 = 1-Math.pow(1-t,3);
+        var v = num*e3;
+        el.textContent = pre + (dec ? v.toFixed(dec) : Math.round(v).toLocaleString()) + suf;
+        if (t<1) requestAnimationFrame(step);
+      })(t0);
+    });
+  }, { threshold: 0.4 });
+  for (var k=0;k<els.length;k++) io.observe(els[k]);
+}
+
+/* ---------------------------------------------------------------------------
+ * boot
+ * ------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------
+ * 10. HORIZONTAL SCROLL SECTION — awwwards' most-tagged layout pattern ("horizontal layouts"):
+ * a sticky viewport whose track translates on X as the section's extra height scrolls by.
+ * Reduced motion, short tracks, or STATIC fall back to native overflow-x scrolling — the
+ * content is always reachable, the choreography is the enhancement.
+ * ------------------------------------------------------------------------- */
+function hscroll(){
+  var els = d.querySelectorAll('[data-mf-hscroll]');
+  if (!els.length) return;
+  if (reduced() || STATIC){ for (var i=0;i<els.length;i++) els[i].classList.add('is-native'); return; }
+  var items = [];
+  for (var i=0;i<els.length;i++){
+    var track = els[i].querySelector('.hs-track');
+    if (track) items.push({ sec: els[i], track: track, extra: 0 });
+  }
+  if (!items.length) return;
+  function layout(){
+    for (var j=0;j<items.length;j++){
+      var it = items[j];
+      it.sec.classList.remove('is-native'); it.sec.style.height = '';
+      var extra = it.track.scrollWidth - w.innerWidth;
+      if (extra < 60){ it.sec.classList.add('is-native'); it.extra = 0; continue; }
+      it.extra = extra;
+      it.sec.style.height = (w.innerHeight + extra) + 'px';
+    }
+  }
+  layout();
+  w.addEventListener('resize', layout, { passive:true });
+  (function tick(){
+    requestAnimationFrame(tick);
+    for (var j=0;j<items.length;j++){
+      var it = items[j]; if (!it.extra) continue;
+      var p = clamp(-it.sec.getBoundingClientRect().top / it.extra, 0, 1);
+      it.track.style.transform = 'translate3d(' + (-p * it.extra).toFixed(1) + 'px,0,0)';
+    }
+  })();
+}
+
+/* ---------------------------------------------------------------------------
+ * 11. PARALLAX — subtle depth on media beds and figures. data-mf-parallax="0.1".
+ * Transform-only, one rAF, off under reduced motion. Media inside beds carries
+ * scale(1.1) headroom in CSS so translated edges never expose the background.
+ * ------------------------------------------------------------------------- */
+function parallax(){
+  if (reduced()) return;
+  var els = d.querySelectorAll('[data-mf-parallax]');
+  if (!els.length) return;
+  (function tick(){
+    requestAnimationFrame(tick);
+    var vh = w.innerHeight;
+    for (var i=0;i<els.length;i++){
+      var el = els[i], r = el.getBoundingClientRect();
+      if (r.bottom < -80 || r.top > vh + 80) continue;
+      var f = +(el.getAttribute('data-mf-parallax')) || 0.1;
+      var off = (r.top + r.height/2 - vh/2) * -f;
+      el.style.transform = 'translate3d(0,' + off.toFixed(1) + 'px,0)';
+    }
+  })();
+}
+
+/* reading-progress hairline: the one persistent piece of chrome — the nav itself stays at the
+ * top of the page and scrolls away (explicit user decision) */
+function progressBar(){
+  var bar = d.createElement('div');
+  bar.className = 'mf-progress'; bar.setAttribute('aria-hidden','true');
+  d.body.appendChild(bar);
+  var ticking = false;
+  function paint(){
+    ticking = false;
+    var max = d.documentElement.scrollHeight - w.innerHeight;
+    var p = max > 0 ? (w.scrollY || d.documentElement.scrollTop) / max : 0;
+    bar.style.transform = 'scaleX(' + (p < 0 ? 0 : p > 1 ? 1 : p).toFixed(4) + ')';
+  }
+  w.addEventListener('scroll', function(){ if (!ticking){ ticking = true; requestAnimationFrame(paint); } }, { passive:true });
+  paint();
+}
+
+/* CSS-3D pointer tilt for cards (data-mf-tilt) — the dimensional touch on flat sections.
+ * Transform-only, hover devices only, resets on leave. */
+function tilts(){
+  if (reduced() || !w.matchMedia('(hover:hover)').matches) return;
+  var els = d.querySelectorAll('[data-mf-tilt]');
+  for (var i=0;i<els.length;i++){
+    (function(el){
+      var max = +(el.getAttribute('data-mf-tilt')) || 7;
+      el.style.transformStyle = 'preserve-3d';
+      el.parentNode && (el.parentNode.style.perspective = '900px');
+      el.addEventListener('pointermove', function(e){
+        var r = el.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+        el.style.transform = 'rotateY(' + (px * max) + 'deg) rotateX(' + (-py * max) + 'deg) translateZ(6px)';
+        el.style.transition = 'transform .15s ease-out';
+      }, { passive:true });
+      el.addEventListener('pointerleave', function(){
+        el.style.transform = 'rotateY(0) rotateX(0) translateZ(0)';
+        el.style.transition = 'transform .5s ' + 'cubic-bezier(.22,1,.36,1)';
+      });
+    })(els[i]);
+  }
+}
+
+ready(function(){
+  try {
+    split(); ladder(); reveals(); counters(); progressBar(); tilts();
+    if (!STATIC) {
+      initVideos(); spotlight(); marquees(); magnets(); scrollText(); hscroll(); parallax();
+      RM.addEventListener && RM.addEventListener('change', function(){ ladder(); });
+    }
+  } catch (e) {
+    /* one broken feature must never blank the page: show everything, statically */
+    d.documentElement.classList.add('mf-rescue');
+  }
+});
+})();
+</script>
+<script>
+(function(){
+'use strict';
+var host = document.querySelector('[data-mf-3d]');
+if (!host) return;
+var RM = window.matchMedia('(prefers-reduced-motion: reduce)');
+function fail(){ document.body.classList.add('mf-3d-off'); }
+if (RM.matches || !window.THREE) return fail();
+var canvas = host.querySelector('canvas');
+var renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
+} catch (e) { return fail(); }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+var scene = new THREE.Scene();
+
+scene.background = new THREE.Color(0x04202e);
+scene.fog = new THREE.Fog(0x04202e, 14, 42);
+var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
+camera.position.set(0, 2.6, 9);
+var grid = new THREE.GridHelper(60, 30, 0xffffff, 0xffffff);
+grid.material.transparent = true; grid.material.opacity = 0.13; grid.position.y = -0.02; scene.add(grid);
+scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+var key = new THREE.DirectionalLight(0xffffff, 1.05); key.position.set(5, 9, 6); scene.add(key);
+var rim = new THREE.DirectionalLight(0x7fd4ff, 0.35); rim.position.set(-7, 3, -5); scene.add(rim);
+function M(c, r, f){ return new THREE.MeshStandardMaterial({ color: c, roughness: r == null ? 0.45 : r, metalness: 0.12, flatShading: !!f }); }
+function MT(c, o){ return new THREE.MeshStandardMaterial({ color: c, roughness: 0.12, metalness: 0, transparent: true, opacity: o }); }
+function V(x, y, z){ return new THREE.Vector3(x, y, z); }
+var Z = { x: 0, y: 0, z: 0 };
+function scat(j){ var a = j * 2.399; return V(Math.cos(a) * (6 + (j % 3) * 2.2), 2.2 + ((j * 0.618) % 1) * 4.5, Math.sin(a) * (5 + (j % 4) * 1.5)); }
+function rrot(j){ return { x: j * 1.3, y: j * 2.1, z: j * 0.7 }; }
+var parts = [];
+/* part(mesh, ASSEMBLED pos/rot, EXPLODED pos/rot, scroll window [w0,w1]) */
+function part(g, tp, tr, fp, fr, w0, w1){ g.position.copy(fp); g.rotation.set(fr.x, fr.y, fr.z); scene.add(g); parts.push({ g: g, fp: fp, fr: fr, tp: tp, tr: tr, w0: w0, w1: w1 }); }
+
+var Bun = M(0xd9a066, 0.5), Patty = M(0x6b4226, 0.62), Cheese = M(0xf2b632, 0.4), Lett = M(0x7ab648, 0.5, true), Tom = M(0xd94f3d, 0.45), Plate = M(0xf2ede4, 0.3), Ses = M(0xf7ecd8, 0.4);
+part(new THREE.Mesh(new THREE.CylinderGeometry(2.75, 2.95, 0.15, 30), Plate), V(0, 0.08, 0), Z, V(0, -4, 0), Z, 0.0, 0.12);
+part(new THREE.Mesh(new THREE.CylinderGeometry(1.62, 1.74, 0.52, 26), Bun), V(0, 0.46, 0), Z, V(-3, 7, 1), rrot(2), 0.1, 0.28);
+part(new THREE.Mesh(new THREE.CylinderGeometry(1.7, 1.7, 0.46, 26), Patty), V(0, 0.94, 0), Z, V(3, 7.6, -1), rrot(3), 0.24, 0.42);
+var ch = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.09, 2.8), Cheese); ch.rotation.y = Math.PI / 4;
+part(ch, V(0, 1.2, 0), { x: 0, y: Math.PI / 4, z: 0 }, V(-2, 8, -2), rrot(4), 0.38, 0.54);
+part(new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 0.17, 22), Tom), V(0.32, 1.36, 0.1), Z, V(2.5, 8.2, 2), rrot(5), 0.5, 0.64);
+part(new THREE.Mesh(new THREE.CylinderGeometry(1.88, 1.98, 0.13, 11), Lett), V(0, 1.5, 0), Z, V(-2.5, 8.6, 2), rrot(6), 0.6, 0.74);
+var tb = new THREE.Group();
+var dome = new THREE.Mesh(new THREE.SphereGeometry(1.72, 26, 16, 0, Math.PI * 2, 0, Math.PI / 2), Bun); dome.scale.y = 0.72; tb.add(dome);
+for (var sI = 0; sI < 7; sI++) { var se = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), Ses);
+  var sa = sI * 0.9; se.position.set(Math.cos(sa) * (0.5 + (sI % 3) * 0.35), 1.02 - (sI % 3) * 0.14, Math.sin(sa) * (0.5 + (sI % 3) * 0.35)); se.scale.y = 0.6; tb.add(se); }
+part(tb, V(0, 1.6, 0), Z, V(0, 9.4, 0), rrot(7), 0.72, 0.9);
+var tMx = 0, tMy = 0, mx = 0, my = 0, sp = 0, tsp = 0;
+window.addEventListener('pointermove', function(e){
+  tMx = e.clientX / window.innerWidth - 0.5; tMy = e.clientY / window.innerHeight - 0.5;
+}, { passive: true });
+function size(){
+  var w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+size(); window.addEventListener('resize', size, { passive: true });
+var doc = document.documentElement, hidden = false;
+document.addEventListener('visibilitychange', function(){ hidden = document.hidden; });
+var t0 = 0;
+renderer.setAnimationLoop(function(t){
+  if (hidden) return;
+  var dt = Math.min((t - t0) / 1000, 0.05); t0 = t;
+  var max = doc.scrollHeight - window.innerHeight;
+  tsp = max > 0 ? (window.scrollY || doc.scrollTop) / max : 0;
+  sp += (tsp - sp) * 0.06;
+  mx += (tMx - mx) * 0.05; my += (tMy - my) * 0.05;
+
+  for (var pi = 0; pi < parts.length; pi++) {
+    var P = parts[pi];
+    var k = (sp - P.w0) / (P.w1 - P.w0); k = k < 0 ? 0 : k > 1 ? 1 : k; k = k * k * (3 - 2 * k);
+    P.g.position.set(P.fp.x + (P.tp.x - P.fp.x) * k, P.fp.y + (P.tp.y - P.fp.y) * k, P.fp.z + (P.tp.z - P.fp.z) * k);
+    P.g.rotation.set(P.fr.x + (P.tr.x - P.fr.x) * k, P.fr.y + (P.tr.y - P.fr.y) * k, P.fr.z + (P.tr.z - P.fr.z) * k);
+  }
+  var oa = sp * 1.15 + 0.5 + mx * 0.7;
+  camera.position.set(Math.sin(oa) * 8.4, 2.5 + my * -1.2 + sp * 0.7, Math.cos(oa) * 8.4);
+  camera.lookAt(0, 1.05, 0);
+  renderer.render(scene, camera);
+});
+})();</script>
+</body>
+</html>
