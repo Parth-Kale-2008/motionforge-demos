@@ -290,7 +290,17 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
 .cine-tail{left:50%;top:50%;z-index:11;width:min(680px,calc(100vw - 40px));text-align:center;opacity:var(--tail-o,0);transform:translate3d(-50%,calc(-50% + var(--tail-y,120px)),0)}
 .cine-tail h2{font-family:var(--fd);font-size:clamp(2.2rem,4.4vw,4rem);line-height:1;text-shadow:0 16px 38px rgba(0,0,0,.4)}
 .cine-tail .btn{margin-top:26px}
-@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }</style>
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+.crv{height:190vh;position:relative;z-index:2}
+.crv-pin{position:sticky;top:0;height:100vh;overflow:hidden;display:grid;place-items:end center;padding-bottom:9vh}
+.crv-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  transform:scale(calc(1.22 - .22 * var(--rv,0)));
+  clip-path:inset(calc(36% - 36% * var(--rv,0)) calc(14% - 14% * var(--rv,0)) round calc(26px - 26px * var(--rv,0)))}
+.crv-shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,color-mix(in srgb,var(--bg) 78%,transparent) 96%)}
+.crv-copy{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center;
+  opacity:var(--rv,0);transform:translateY(calc(44px - 44px * var(--rv,0)))}
+.crv-copy h2{font-size:clamp(2rem,5.4vw,4.4rem);text-shadow:0 8px 44px color-mix(in srgb,var(--bg) 80%,transparent)}
+@media (prefers-reduced-motion:reduce){.crv{height:auto}.crv-pin{position:static;height:72vh}.crv-media{transform:none;clip-path:none}.crv-copy{opacity:1;transform:none}}</style>
 </head>
 <body>
 <header class="mf-nav wrap" data-mf-in="chrome">
@@ -308,6 +318,17 @@ footer{padding-block:clamp(28px,4vh,52px);border-top:1px solid var(--line)}
     <div class="cine-panel cine-panel-1 glass cinev-panel"><h2>Pick it</h2><p>Real photos, real history, no surprises.</p></div>
     <div class="cine-panel cine-panel-2 glass cinev-panel"><h2>Inspect it</h2><p>200-point certification, documented.</p></div>
     <div class="cine-tail" data-cine-gate="tail.enter"><h2>Take the wheel.</h2><a class="btn" href="#lead-form">Book a test drive</a></div>
+  </div>
+</section>
+<section class="crv" data-car-reveal>
+  <div class="crv-pin">
+    <img class="crv-media" src="media/car-reveal.jpg" alt="AutoMax" width="1280" height="720" loading="lazy" decoding="async">
+    <div class="crv-shade" aria-hidden="true"></div>
+    <div class="crv-copy">
+      <p class="micro">the reveal</p>
+      <h2>Meet your next car</h2>
+      <a class="btn" href="#cta" data-mf-magnet="110">Book a test drive</a>
+    </div>
   </div>
 </section>
 <section class="sheet hlband"><div class="wrap"><div class="hlband-in">
@@ -949,6 +970,19 @@ w.addEventListener('pointermove', function(e){
 }, { passive:true });
 tick();
 });
+})();
+(function(){
+'use strict';
+var sec = document.querySelector('[data-car-reveal]');
+if (!sec || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+function tick(){
+  var r = sec.getBoundingClientRect();
+  var total = Math.max(1, r.height - window.innerHeight);
+  var p = Math.min(1, Math.max(0, -r.top / total));
+  sec.style.setProperty('--rv', (p * p * (3 - 2 * p)).toFixed(4));
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
 })();</script>
 </body>
 </html>
